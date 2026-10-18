@@ -1,0 +1,547 @@
+{
+  "domLayout": [
+    {
+      "testName": "Computed box-sizing: border-box across layout elements (ar desktop)",
+      "passed": true,
+      "details": {
+        "body": "border-box",
+        ".ez-top": "border-box",
+        ".ez-wrap": "border-box",
+        ".ez-chatpage": "border-box",
+        ".ez-box": "border-box",
+        ".ez-brief": "border-box",
+        ".ez-on": "border-box",
+        ".ez-stage": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing: border-box across layout elements (ar tablet)",
+      "passed": true,
+      "details": {
+        "body": "border-box",
+        ".ez-top": "border-box",
+        ".ez-wrap": "border-box",
+        ".ez-chatpage": "border-box",
+        ".ez-box": "border-box",
+        ".ez-brief": "border-box",
+        ".ez-on": "border-box",
+        ".ez-stage": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing: border-box across layout elements (ar mobile)",
+      "passed": true,
+      "details": {
+        "body": "border-box",
+        ".ez-top": "border-box",
+        ".ez-wrap": "border-box",
+        ".ez-chatpage": "border-box",
+        ".ez-box": "border-box",
+        ".ez-brief": "border-box",
+        ".ez-on": "border-box",
+        ".ez-stage": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing on .ez-jr (ar)",
+      "passed": true,
+      "details": {
+        "journeyBoxSizing": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing: border-box across layout elements (en desktop)",
+      "passed": true,
+      "details": {
+        "body": "border-box",
+        ".ez-top": "border-box",
+        ".ez-wrap": "border-box",
+        ".ez-chatpage": "border-box",
+        ".ez-box": "border-box",
+        ".ez-brief": "border-box",
+        ".ez-on": "border-box",
+        ".ez-stage": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing: border-box across layout elements (en tablet)",
+      "passed": true,
+      "details": {
+        "body": "border-box",
+        ".ez-top": "border-box",
+        ".ez-wrap": "border-box",
+        ".ez-chatpage": "border-box",
+        ".ez-box": "border-box",
+        ".ez-brief": "border-box",
+        ".ez-on": "border-box",
+        ".ez-stage": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing: border-box across layout elements (en mobile)",
+      "passed": true,
+      "details": {
+        "body": "border-box",
+        ".ez-top": "border-box",
+        ".ez-wrap": "border-box",
+        ".ez-chatpage": "border-box",
+        ".ez-box": "border-box",
+        ".ez-brief": "border-box",
+        ".ez-on": "border-box",
+        ".ez-stage": "border-box"
+      }
+    },
+    {
+      "testName": "Computed box-sizing on .ez-jr (en)",
+      "passed": true,
+      "details": {
+        "journeyBoxSizing": "border-box"
+      }
+    }
+  ],
+  "containerCentering": [
+    {
+      "testName": "Desktop container centered without horizontal drift (ar)",
+      "passed": true,
+      "details": {
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "hasHorizontalScroll": false,
+        "chatpage": {
+          "width": 1280,
+          "left": 0,
+          "right": 1280,
+          "centeredDiff": 0
+        },
+        "top": {
+          "width": 1040,
+          "left": 120,
+          "right": 1160,
+          "centeredDiff": 0
+        }
+      }
+    },
+    {
+      "testName": "Desktop container centered without horizontal drift (en)",
+      "passed": true,
+      "details": {
+        "clientWidth": 1280,
+        "scrollWidth": 1280,
+        "hasHorizontalScroll": false,
+        "chatpage": {
+          "width": 1280,
+          "left": 0,
+          "right": 1280,
+          "centeredDiff": 0
+        },
+        "top": {
+          "width": 1040,
+          "left": 120,
+          "right": 1160,
+          "centeredDiff": 0
+        }
+      }
+    }
+  ],
+  "overflowTests": [
+    {
+      "testName": "Zero horizontal overflow scrollWidth === clientWidth (ar tablet 768px)",
+      "passed": true,
+      "details": {
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "zeroHorizontalOverflow": true
+      }
+    },
+    {
+      "testName": "Zero horizontal overflow scrollWidth === clientWidth (ar mobile 390px)",
+      "passed": true,
+      "details": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "zeroHorizontalOverflow": true
+      }
+    },
+    {
+      "testName": "Zero horizontal overflow scrollWidth === clientWidth (en tablet 768px)",
+      "passed": true,
+      "details": {
+        "clientWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "zeroHorizontalOverflow": true
+      }
+    },
+    {
+      "testName": "Zero horizontal overflow scrollWidth === clientWidth (en mobile 390px)",
+      "passed": true,
+      "details": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "zeroHorizontalOverflow": true
+      }
+    }
+  ],
+  "audioVisualizer": [
+    {
+      "testName": "Audio visualizer 4-bar animated recording indicator (.ez-wave > i*4) (ar)",
+      "passed": true,
+      "details": {
+        "hasWave": true,
+        "isMicOn": true,
+        "barCount": 4,
+        "styles": [
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0s",
+            "width": "3px"
+          },
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0.15s",
+            "width": "3px"
+          },
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0.3s",
+            "width": "3px"
+          },
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0.45s",
+            "width": "3px"
+          }
+        ]
+      }
+    },
+    {
+      "testName": "Audio visualizer 4-bar animated recording indicator (.ez-wave > i*4) (en)",
+      "passed": true,
+      "details": {
+        "hasWave": true,
+        "isMicOn": true,
+        "barCount": 4,
+        "styles": [
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0s",
+            "width": "3px"
+          },
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0.15s",
+            "width": "3px"
+          },
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0.3s",
+            "width": "3px"
+          },
+          {
+            "animationName": "ez-wv",
+            "animationDuration": "0.9s",
+            "animationDelay": "0.45s",
+            "width": "3px"
+          }
+        ]
+      }
+    }
+  ],
+  "liveBrief": [
+    {
+      "testName": "Live brief card initial state (0% bar, in progress status) (ar)",
+      "passed": true,
+      "details": {
+        "barWidth": "0%",
+        "rowCount": 4,
+        "statusText": "بنسمعك",
+        "hasOkClass": false
+      }
+    },
+    {
+      "testName": "Live brief step 0 -> 1 progress (25%) and .ez-fresh flash animation (ar)",
+      "passed": true,
+      "details": {
+        "barWidth": "25%",
+        "td0Class": "ez-fresh",
+        "hasFresh": true,
+        "animationName": "ez-flash",
+        "text": "مشكلة في إدارة المخزون والمبيعات اليدوية"
+      }
+    },
+    {
+      "testName": "Live brief step 1 -> 2 progress (50%) and .ez-fresh flash (ar)",
+      "passed": true,
+      "details": {
+        "barWidth": "50%",
+        "hasFresh": true
+      }
+    },
+    {
+      "testName": "Live brief step 2 -> 3 progress (75%) and .ez-fresh flash (ar)",
+      "passed": true,
+      "details": {
+        "barWidth": "75%",
+        "hasFresh": true
+      }
+    },
+    {
+      "testName": "Live brief card initial state (0% bar, in progress status) (en)",
+      "passed": true,
+      "details": {
+        "barWidth": "0%",
+        "rowCount": 4,
+        "statusText": "Listening",
+        "hasOkClass": false
+      }
+    },
+    {
+      "testName": "Live brief step 0 -> 1 progress (25%) and .ez-fresh flash animation (en)",
+      "passed": true,
+      "details": {
+        "barWidth": "25%",
+        "td0Class": "ez-fresh",
+        "hasFresh": true,
+        "animationName": "ez-flash",
+        "text": "Inventory and sales management bottleneck"
+      }
+    },
+    {
+      "testName": "Live brief step 1 -> 2 progress (50%) and .ez-fresh flash (en)",
+      "passed": true,
+      "details": {
+        "barWidth": "50%",
+        "hasFresh": true
+      }
+    },
+    {
+      "testName": "Live brief step 2 -> 3 progress (75%) and .ez-fresh flash (en)",
+      "passed": true,
+      "details": {
+        "barWidth": "75%",
+        "hasFresh": true
+      }
+    }
+  ],
+  "intakeValidation": [
+    {
+      "testName": "Contact validation rejects invalid string without progressing to 100% (ar)",
+      "passed": true,
+      "details": {
+        "barWidth": "75%",
+        "blockedAtStep3": true,
+        "lastAgentMsg": "ابعتلنا رقم واتساب أو إيميل صحيح عشان نعرف نوصلك."
+      }
+    },
+    {
+      "testName": "Contact validation accepts valid contact & completes brief to 100% (ar)",
+      "passed": true,
+      "details": {
+        "barWidth": "100%",
+        "td3Fresh": true,
+        "statusOk": true,
+        "statusText": "وصلتنا"
+      }
+    },
+    {
+      "testName": "Contact validation rejects invalid string without progressing to 100% (en)",
+      "passed": true,
+      "details": {
+        "barWidth": "75%",
+        "blockedAtStep3": true,
+        "lastAgentMsg": "Please send a valid WhatsApp number or email so we can reach you."
+      }
+    },
+    {
+      "testName": "Contact validation accepts valid contact & completes brief to 100% (en)",
+      "passed": true,
+      "details": {
+        "barWidth": "100%",
+        "td3Fresh": true,
+        "statusOk": true,
+        "statusText": "Received"
+      }
+    }
+  ],
+  "journeyPostSubmission": [
+    {
+      "testName": "16-ray burst animation (.ez-burst > i*16) with 22.5deg step and ez-fly (ar)",
+      "passed": true,
+      "details": {
+        "hasBurst": true,
+        "rayCount": 16,
+        "anglesMatch16": true,
+        "animationName": "ez-fly"
+      }
+    },
+    {
+      "testName": "Animated request ID letters (.ez-rid > span.ez-ch) with ez-up animation (ar)",
+      "passed": true,
+      "details": {
+        "hasRid": true,
+        "charCount": 8,
+        "letters": "EZ-TW34Z",
+        "animationName": "ez-up",
+        "hasDelayVar": true
+      }
+    },
+    {
+      "testName": "Journey step 1 ExtraForm renders correctly with options and textarea (ar)",
+      "passed": true,
+      "details": {
+        "hasExtraForm": true,
+        "optsCount": 3,
+        "hasDetailsArea": true
+      }
+    },
+    {
+      "testName": "Journey step 2 CallPicker renders with day/slot options and disabled book button (ar)",
+      "passed": true,
+      "details": {
+        "hasCallPicker": true,
+        "optsGroupsCount": 2,
+        "optButtonsCount": 8,
+        "isBookDisabledInitially": true
+      }
+    },
+    {
+      "testName": "Selecting day and slot enables booking button (ar)",
+      "passed": true,
+      "details": {
+        "bookEnabled": true
+      }
+    },
+    {
+      "testName": "Journey step 3 Timeline and localized tracking link href startsWith /ar/track?id= (ar)",
+      "passed": true,
+      "details": {
+        "hasTimeline": true,
+        "timelineItemsCount": 4,
+        "trackHref": "/ar/track?id=EZ-TW34Z",
+        "isLocalizedTrackHref": true,
+        "hasFeedback": true,
+        "feedbackOptionsCount": 3
+      }
+    },
+    {
+      "testName": "Feedback card submission completes with confirmation (.ez-fbk.ez-thanks) (ar)",
+      "passed": true,
+      "details": {
+        "hasSuccess": true,
+        "text": "شكرًا، ده بيساعدنا نحسّن."
+      }
+    },
+    {
+      "testName": "16-ray burst animation (.ez-burst > i*16) with 22.5deg step and ez-fly (en)",
+      "passed": true,
+      "details": {
+        "hasBurst": true,
+        "rayCount": 16,
+        "anglesMatch16": true,
+        "animationName": "ez-fly"
+      }
+    },
+    {
+      "testName": "Animated request ID letters (.ez-rid > span.ez-ch) with ez-up animation (en)",
+      "passed": true,
+      "details": {
+        "hasRid": true,
+        "charCount": 8,
+        "letters": "EZ-YKF8H",
+        "animationName": "ez-up",
+        "hasDelayVar": true
+      }
+    },
+    {
+      "testName": "Journey step 1 ExtraForm renders correctly with options and textarea (en)",
+      "passed": true,
+      "details": {
+        "hasExtraForm": true,
+        "optsCount": 3,
+        "hasDetailsArea": true
+      }
+    },
+    {
+      "testName": "Journey step 2 CallPicker renders with day/slot options and disabled book button (en)",
+      "passed": true,
+      "details": {
+        "hasCallPicker": true,
+        "optsGroupsCount": 2,
+        "optButtonsCount": 8,
+        "isBookDisabledInitially": true
+      }
+    },
+    {
+      "testName": "Selecting day and slot enables booking button (en)",
+      "passed": true,
+      "details": {
+        "bookEnabled": true
+      }
+    },
+    {
+      "testName": "Journey step 3 Timeline and localized tracking link href startsWith /en/track?id= (en)",
+      "passed": true,
+      "details": {
+        "hasTimeline": true,
+        "timelineItemsCount": 4,
+        "trackHref": "/en/track?id=EZ-YKF8H",
+        "isLocalizedTrackHref": true,
+        "hasFeedback": true,
+        "feedbackOptionsCount": 3
+      }
+    },
+    {
+      "testName": "Feedback card submission completes with confirmation (.ez-fbk.ez-thanks) (en)",
+      "passed": true,
+      "details": {
+        "hasSuccess": true,
+        "text": "Thank you, this helps us improve."
+      }
+    }
+  ],
+  "foreignLibraries": [
+    {
+      "testName": "package.json has zero Tailwind, Framer Motion, GSAP, Radix",
+      "passed": true,
+      "details": {
+        "foundBanned": [],
+        "checkedDepsCount": 25
+      }
+    },
+    {
+      "testName": "Runtime window globals check (ar)",
+      "passed": true,
+      "details": {
+        "hasTailwind": false,
+        "hasFramerMotion": false,
+        "hasGsap": false,
+        "hasRadix": false
+      }
+    },
+    {
+      "testName": "Runtime window globals check (en)",
+      "passed": true,
+      "details": {
+        "hasTailwind": false,
+        "hasFramerMotion": false,
+        "hasGsap": false,
+        "hasRadix": false
+      }
+    }
+  ],
+  "summary": {
+    "total": 45,
+    "passed": 45,
+    "failed": 0
+  }
+}

@@ -1,0 +1,8 @@
+# Nested Git Repositories
+eazifyai-web/
+eazifyai-api/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.log
