@@ -235,6 +235,32 @@ Retrieves public status summary and timeline events for order tracking.
 }
 ```
 
+#### `PATCH /v1/requests/:publicId`
+Updates contact and operational details for an existing request without creating a duplicate order.
+- **Access Level**: Public (Level 0) or User (Level 2)
+- **Path Parameters**: `publicId` (UUIDv4)
+- **Request Body (Zod `updateRequestDetailsSchema`)**:
+```json
+{
+  "whatsapp": "01098765432",
+  "email": "owner@store.com",
+  "name": "محمود صاحب المتجر",
+  "problem": "تحديث: محتاج كمان ربط مع تطبيق توصيل الطلبات",
+  "businessType": "سوبر ماركت"
+}
+```
+- **Response `200 OK`**:
+```json
+{
+  "success": true,
+  "publicId": "e2f1a0b3-c4d5-4e6f-7a8b-9c0d1e2f3a4b",
+  "message": "Request details updated successfully"
+}
+```
+- **Side Effects**:
+  - Appends a `DETAILS_UPDATED` event to the request's tracking timeline.
+  - Revalidates the customer's `/profile` and `/track/[publicId]` views.
+
 #### `POST /v1/requests/fallback`
 Emergency fallback lead capture when AI assistant is offline or disabled.
 - **Access Level**: Optional Auth (Level 1)
@@ -331,6 +357,53 @@ Retrieves full details of a specific request, including internal AI analysis, mi
 - **Path Parameters**: `id` (Request UUID)
 - **Response `200 OK`**: Returns complete `AdminRequestDetail` object.
 
+#### `GET /v1/admin/analytics`
+Retrieves live aggregated platform analytics calculated directly from PostgreSQL.
+- **Access Level**: Admin (Level 3)
+- **Headers**: `Authorization: Bearer <admin-token>`
+- **Response `200 OK`**:
+```json
+{
+  "totalRequests": 48,
+  "completedDeals": 12,
+  "totalRevenueEgp": 145000,
+  "conversionRate": 25.0,
+  "avgScore": 78.4,
+  "byStatus": {
+    "NEW": 14,
+    "STUDYING": 8,
+    "CONTACTED": 6,
+    "IN_PROGRESS": 8,
+    "COMPLETED": 12,
+    "REJECTED": 0
+  },
+  "byBusinessType": [
+    { "type": "صيدلية", "count": 18 },
+    { "type": "عيادة", "count": 14 },
+    { "type": "مدرس / سنتر", "count": 10 },
+    { "type": "ورشة / تجارة", "count": 6 }
+  ]
+}
+```
+
+#### `PATCH /v1/admin/requests/:id`
+Updates operational management fields including AI score overrides, deal value, and booked consultation call slots.
+- **Access Level**: Admin (Level 3)
+- **Headers**: `Authorization: Bearer <admin-token>`
+- **Path Parameters**: `id` (Request UUID)
+- **Request Body (Zod `adminUpdateDetailsSchema`)**:
+```json
+{
+  "scoreOverride": 92,
+  "dealValue": 15000.0,
+  "callDay": 2,
+  "callSlot": 1,
+  "callConfirmed": true
+}
+```
+- **Response `200 OK`**: Returns the updated request item.
+- **Side Effects**: Appends an event to `RequestEvent` and records an entry in `AuditLog`.
+
 #### `PATCH /v1/admin/requests/:id/status`
 Updates request status and enqueues customer notification email.
 - **Access Level**: Admin (Level 3)
@@ -356,7 +429,7 @@ Updates request status and enqueues customer notification email.
 - **Side Effects**:
   - Automatically records an entry in `AuditLog` referencing the admin `actorId`.
   - Appends a `STATUS_CHANGE` timeline event to `RequestEvent`.
-  - Enqueues a `request:status-changed` job in `pg-boss` to email the customer.
+  - Enqueues a `request_status_changed` job in `pg-boss` to email the customer.
 
 #### `POST /v1/admin/requests/:id/events`
 Appends a manual note or meeting event to the request's public tracking timeline.
@@ -549,7 +622,7 @@ Emitted if the LangChain agent or Google Gemini API encounters an unrecoverable 
 
 EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactional background processing backed directly by PostgreSQL tables (`pgboss.*`).
 
-### 5.1 Queue: `request:created`
+### 5.1 Queue: `request_created`
 - **Trigger**: Fired when a request is created via the interactive AI chat (`socket/index.ts`) or via the fallback lead form (`fallback.service.ts`).
 - **Worker**: `handleTelegramNotification` (`src/jobs/workers/telegram.worker.ts`).
 - **Payload Schema**:
@@ -568,7 +641,7 @@ EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactio
 ```
 - **Action**: Formats an HTML notification message and posts to the company's internal operations Telegram channel via `https://api.telegram.org/bot<TOKEN>/sendMessage`.
 
-### 5.2 Queue: `request:status-changed`
+### 5.2 Queue: `request_status_changed`
 - **Trigger**: Fired when an administrator updates the status of an order via `PATCH /v1/admin/requests/:id/status`.
 - **Worker**: `handleEmailNotification` (`src/jobs/workers/email.worker.ts`).
 - **Payload Schema**:
@@ -584,4 +657,42 @@ EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactio
   "updatedAt": "2026-10-21T18:30:00.000Z"
 }
 ```
-- **Action**: Composes a branded HTML status update email with a direct public tracking link (`https://eazifyai.com/ar/track/<publicId>`) and dispatches via Nodemailer.
+- **Action**: Composes a branded HTML status update email with a direct public tracking link (`https://eazifyai.com/ar/track/<publicId>`) and dispatches via Resend API or SMTP fallback.
+
+---
+
+## 6. Interactive Admin Telegram Bot & System Monitoring
+
+EazifyAi includes an interactive Telegram admin bot listener and an autonomous website health watchdog that operate concurrently with the HTTP server.
+
+### 6.1 Interactive Telegram Bot Listener (`telegram-listener.ts`)
+- **Transport**: Long-polling via Telegram Bot API `getUpdates`.
+- **Authentication**: Validates that `msg.chat.id` matches the authorized `TELEGRAM_CHAT_ID`. Messages from unauthorized users receive a polite rejection and are logged.
+- **Commands**:
+  - `/status`: Checks live connectivity of Database (Prisma ping), API (`PORT`), and Web Frontend (`WEB_ORIGIN`). Returns a formatted status card.
+  - `/simulate_down`: Simulates immediate website downtime and triggers the automated outage alert.
+  - `/simulate_up`: Restores normal website status and dispatches the recovery confirmation.
+  - **Natural Language Chat**: Any non-command message from the admin is sent to Google Gemini (`gemini-2.0-flash`), which replies in a helpful Egyptian technical assistant persona.
+
+### 6.2 Website Uptime Watchdog (`uptime-watchdog.ts`)
+- **Interval**: 30-second automated health polling cycle.
+- **Target**: Probes `WEB_ORIGIN` (or respects simulated outage state).
+- **Outage Alert**: When an outage occurs (or `/simulate_down` is called), sends an immediate Telegram notification:
+  ```html
+  🚨 <b>تنبيه عاجل: تعطل الموقع! / Alert: Website Outage Detected!</b>
+  • الهدف: https://eazifyai.com
+  • الحالة: DOWN
+  • الوقت: 2026-10-22 04:30:00
+  ```
+- **Recovery Alert**: When health is restored (or `/simulate_up` is called):
+  ```html
+  ✅ <b>تم حل المشكلة: الموقع عاد للعمل! / Website Recovered!</b>
+  • الهدف: https://eazifyai.com
+  • الحالة: UP (200 OK)
+  ```
+
+### 6.3 Downtime Simulation Script
+Admins can trigger downtime tests directly from the terminal without manual curl calls:
+```powershell
+npx tsx scripts/simulate-downtime.ts
+```
