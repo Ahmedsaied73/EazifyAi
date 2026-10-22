@@ -55,10 +55,15 @@ EazifyAi is an enterprise-grade AI automation and workflow consultation platform
 - Real-time management across 4 tabs: Inbox (filters & status overrides), Ideas (scoring matrix), Calendar (call slot reservations), and Analytics.
 - Mutations strictly dispatched through Server Actions (`updateRequestStatusAction`, `updateCallSlotAction`).
 
-### Phase 6: Security Hardening & Observability
-- Strict Helmet security headers, CORS origin enforcement, and tiered IP rate limiting.
-- Row-Level Security (RLS) enabled across all tables (`Profile`, `Request`, `Message`, `AuditLog`, etc.).
-- Sentry error tracking configured without PII logging.
+### Phase 6: Security Hardening, Reliability & System Monitoring
+- Strict Helmet security headers, Content-Security-Policy (CSP), CORS origin enforcement, and tiered IP rate limiting.
+- Row-Level Security (RLS) enabled across all tables (`Profile`, `Request`, `RequestEvent`, `AuditLog`, `OnboardingAnswer`).
+- Phase 6 Schema extensions applied: AI auto-score (`score`), manual admin override (`scoreOverride`), deal value tracking (`dealValue`), and consultation call slot bookings (`callDay`, `callSlot`, `callConfirmed`, `callBookedAt`).
+- N+1 query elimination across customer requests via Prisma `include: { events: true }`.
+- Socket.io TOCTOU race condition mutex lock preventing duplicate request creation on turn close.
+- HTML input stripping sanitization middleware applied after Zod validation.
+- Interactive Admin Telegram Bot listener (`telegram-listener.ts`) with live `/status`, `/simulate_down`, `/simulate_up`, and natural language assistant chat via Google Gemini.
+- Autonomous Website Uptime Watchdog (`uptime-watchdog.ts`) with 30s polling cycle and immediate Telegram outage/recovery alerts.
 
 ---
 
@@ -80,7 +85,7 @@ EazifyAi is an enterprise-grade AI automation and workflow consultation platform
    SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
    SUPABASE_JWT_SECRET=<jwt-secret>
    GEMINI_API_KEY=<gemini-api-key>
-   AI_MODEL_NAME=gemini-flash-lite-latest
+   AI_MODEL_NAME=gemini-2.0-flash
    AI_DAILY_BUDGET_USD=5.0
    TELEGRAM_BOT_TOKEN=<telegram-bot-token>
    TELEGRAM_CHAT_ID=<telegram-chat-id>
