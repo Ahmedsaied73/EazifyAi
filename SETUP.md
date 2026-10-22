@@ -47,11 +47,12 @@ Create a file named `.env` in `D:\EazifyAi\eazifyai-api\.env`.
 | `WEB_ORIGIN` | String (URL) | **CORS Allowed Origin**: The exact URL of the frontend web application (e.g. `http://localhost:3000` for local development, or `https://eazifyai.com` in production). CORS requests and credentials from any other origin are strictly rejected. |
 | `SENTRY_DSN` | String (URL) *(Optional)* | **Sentry DSN**: DSN string for backend crash reporting and performance tracing.<br/>*How to get:* Sentry Dashboard -> Project Settings -> Client Keys (DSN). |
 | `GEMINI_API_KEY` | String *(Optional)* | **Google Gemini API Key**: Powers the LangChain / LangGraph AI Discovery Agent that chats with users, clarifies business problems, and computes brief completeness.<br/>*How to get:* Visit [Google AI Studio](https://aistudio.google.com/app/apikey), sign in with your Google account, click **Create API Key**, and copy the generated key. |
-| `AI_MODEL_NAME` | String (`gemini-3.8-flash`) | **Gemini Model Identifier**: The specific Google Gemini model to execute. Defaults to `gemini-3.8-flash` (or `gemini-1.5-flash`), balancing ultra-low latency with nuanced Egyptian Arabic understanding. |
+| `AI_MODEL_NAME` | String (`gemini-2.0-flash`) | **Gemini Model Identifier**: The specific Google Gemini model to execute. Defaults to `gemini-2.0-flash`, balancing ultra-low latency with nuanced Egyptian Arabic understanding. |
 | `AI_DAILY_BUDGET_USD` | Number (`5.0`) | **Daily Spending Cap**: Maximum allowable daily cost in USD for LLM API calls. Built-in guardrail preventing unexpected bills from viral traffic or abuse. |
-| `TELEGRAM_BOT_TOKEN` | String *(Optional)* | **Telegram Bot API Token**: Token for the bot that sends real-time notifications to company operators when a user finishes a chat or submits a request.<br/>*How to get:* Open Telegram, message `@BotFather`, run `/newbot`, name your bot, and copy the HTTP API token provided. |
-| `TELEGRAM_CHAT_ID` | String *(Optional)* | **Telegram Alert Chat/Group ID**: Destination chat ID for incoming notifications.<br/>*How to get:* Add your bot to an admin group, send a message in the group, and visit `https://api.telegram.org/bot<TOKEN>/getUpdates` to find the `"chat":{"id": -100xxxxxxx}`. |
-| `SMTP_HOST` | String *(Optional)* | **SMTP Mail Server Hostname**: E.g., `smtp.gmail.com`, `smtp.resend.com`, `smtp.sendgrid.net`. |
+| `TELEGRAM_BOT_TOKEN` | String *(Optional)* | **Telegram Bot API Token**: Token for the bot that sends real-time order notifications and powers the interactive admin bot listener.<br/>*How to get:* Open Telegram, message `@BotFather`, run `/newbot`, name your bot, and copy the HTTP API token provided. |
+| `TELEGRAM_CHAT_ID` | String *(Optional)* | **Telegram Admin Chat ID**: Destination chat ID authorized to receive alerts and interact with the admin bot.<br/>*How to get:* Message your bot in Telegram, then run `npx tsx scripts/get-telegram-chat-id.ts` in `eazifyai-api` to discover your numeric Chat ID. |
+| `RESEND_API_KEY` | String *(Optional)* | **Resend API Key**: Used by the notification worker for high-deliverability transactional customer emails. |
+| `SMTP_HOST` | String *(Optional)* | **SMTP Mail Server Hostname**: E.g., `smtp.gmail.com`, `smtp.resend.com`, `smtp.sendgrid.net`. Fallback if `RESEND_API_KEY` is not provided. |
 | `SMTP_PORT` | Number (`587`) | **SMTP Port**: Typically `587` (STARTTLS) or `465` (SSL). |
 | `SMTP_USER` | String *(Optional)* | **SMTP Username / Email Address**: The account identifier for sending outgoing emails. |
 | `SMTP_PASS` | String *(Optional)* | **SMTP Password**: Account password or provider API key (e.g. Resend API key or Gmail App Password). |
@@ -77,14 +78,15 @@ WEB_ORIGIN=http://localhost:3000
 
 # Google Gemini AI Agent
 GEMINI_API_KEY=AIzaSyD-sample-gemini-api-key-here
-AI_MODEL_NAME=gemini-3.8-flash
+AI_MODEL_NAME=gemini-2.0-flash
 AI_DAILY_BUDGET_USD=5.0
 
-# Telegram Operator Alerts
-TELEGRAM_BOT_TOKEN=123456789:ABCdefGhIJKlmNoPQRstuVWXyz
-TELEGRAM_CHAT_ID=-1001234567890
+# Telegram Operator Alerts & Interactive Admin Bot
+TELEGRAM_BOT_TOKEN=8194795997:AAGpInx84Mu75aiVUhoNQjWaanLygqPCFRs
+TELEGRAM_CHAT_ID=7710040347
 
-# SMTP Customer Emails
+# Customer Emails (Resend or SMTP)
+RESEND_API_KEY=re_1234567890abcdef
 SMTP_HOST=smtp.resend.com
 SMTP_PORT=587
 SMTP_USER=resend
@@ -109,15 +111,21 @@ npm run prisma:migrate
 npm run prisma:generate
 ```
 
-### Step 2.4: Seed Database
-Seed initial admin roles and realistic Egyptian small business requests:
+### Step 2.4: Seed Database & Operational Scripts
+Run the following utility scripts as needed inside `D:\EazifyAi\eazifyai-api`:
 
 ```powershell
 # 1. Seed or promote the primary administrator account (ahmedosaied73@gmail.com)
-npm run seed:admin
+npx tsx scripts/create-or-update-admin.ts
 
-# 2. Seed realistic demo requests (pharmacies, clinics, tutors, furniture workshops)
-npm run seed:requests
+# 2. Retrieve your Telegram Chat ID automatically from recent bot updates
+npx tsx scripts/get-telegram-chat-id.ts
+
+# 3. Apply Phase 6 Row Level Security (RLS) policies directly to PostgreSQL
+npx tsx scripts/apply-phase6-rls.ts
+
+# 4. Simulate a website outage to test the automated Telegram watchdog alert
+npx tsx scripts/simulate-downtime.ts
 ```
 
 ### Step 2.5: Start API Server
