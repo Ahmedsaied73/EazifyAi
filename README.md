@@ -27,13 +27,13 @@ D:\EazifyAi\
 │   │   ├── config/         # Environment schema validation (Zod)
 │   │   ├── core/           # Request ID, structured logger (Pino), errors
 │   │   ├── db/             # Prisma client instance
-│   │   ├── jobs/           # pg-boss background queues (Telegram & Email workers)
-│   │   ├── middleware/     # Auth (JWKS/JWT), rate limiting, Zod validation, error handling
+│   │   ├── jobs/           # pg-boss background queues, Telegram listener & Uptime watchdog
+│   │   ├── middleware/     # Auth (JWKS/JWT), rate limiting, HTML sanitization, error handling
 │   │   ├── modules/        # Modular domain slices (health, auth, admin, requests, onboarding)
-│   │   ├── socket/         # Socket.io real-time streaming agent server
+│   │   ├── socket/         # Socket.io real-time streaming agent server with TOCTOU mutex
 │   │   ├── app.ts          # Express application initialization
-│   │   └── server.ts       # HTTP + Socket.io server entry point
-│   ├── tests/              # Vitest test suites (evals, integration, matrix, unit)
+│   │   └── server.ts       # HTTP + Socket.io server entry point with watchdog lifecycle
+│   ├── tests/              # Vitest test suites (110+ evals, integration, matrix, unit)
 │   └── package.json
 │
 ├── eazifyai-web/           # Next.js 16 (Turbopack) Full-Stack Web Frontend
@@ -65,11 +65,12 @@ D:\EazifyAi\
 | **Backend Runtime** | **Node.js 22+ (ESM)** | Express 5.3 with native ESM modules |
 | **Real-time Engine** | **Socket.io 4.8** | Low-latency bi-directional streaming for token-by-token AI agent responses |
 | **AI Orchestration** | **LangChain & LangGraph** | StateGraph state machine with Egyptian cultural calibration and sensitive guardrails |
-| **LLM Provider** | **Google Gemini 3.8 / 1.5** | High-speed contextual processing via `@langchain/google-genai` |
-| **Database & ORM** | **PostgreSQL & Prisma 7.10** | UUID primary keys, JSONB summaries, connection pooling, indexed queries |
+| **LLM Provider** | **Google Gemini 2.0 Flash** | High-speed contextual processing (`gemini-2.0-flash`) via `@langchain/google-genai` |
+| **Database & ORM** | **PostgreSQL & Prisma 7.10** | UUID primary keys, JSONB summaries, connection pooling, indexed queries, RLS policies |
 | **Authentication** | **Supabase Auth** | Asymmetric RS256 JWKS verification via `jose`, MFA AAL2 support, Role-Based Access Control |
-| **Background Queues** | **pg-boss 12.38** | Reliable PostgreSQL-backed job queues for Telegram alerts and customer notification emails |
-| **Logging & Security** | **Pino & Helmet** | Structured JSON logging, unique X-Request-Id tracing, strict CORS, tiered rate limiting |
+| **Background Queues** | **pg-boss 12.38** | PostgreSQL-backed queues (`request_created`, `request_status_changed`) |
+| **Admin Bot & Monitoring** | **Telegram Bot & Watchdog** | Interactive admin bot (`/status`, `/simulate_down`, Gemini AI chat) + 30s uptime watchdog |
+| **Logging & Security** | **Pino & Helmet** | Structured JSON logging, unique X-Request-Id tracing, strict CORS, HTML sanitization, tiered rate limiting |
 
 ---
 
@@ -103,7 +104,7 @@ Both applications enforce strict automated quality gates. Before merging or subm
 ```powershell
 cd D:\EazifyAi\eazifyai-api
 
-# Run comprehensive test suite (82+ unit, integration, eval, and matrix tests)
+# Run comprehensive test suite (110+ unit, integration, eval, and matrix tests)
 npm test
 
 # Run ESLint rules (including clean architecture import restrictions)
