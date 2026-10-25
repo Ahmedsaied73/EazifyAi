@@ -78,6 +78,7 @@ EazifyAi is an enterprise-grade AI automation and workflow consultation platform
    NODE_ENV=production
    PORT=3001
    WEB_ORIGIN=https://eazify.ai
+   TRUST_PROXY=1
    DATABASE_URL=postgres://user:password@pooler.supabase.com:6543/postgres?pgbouncer=true
    DIRECT_DATABASE_URL=postgres://user:password@db.supabase.com:5432/postgres
    SUPABASE_URL=https://<project-ref>.supabase.co
