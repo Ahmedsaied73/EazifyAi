@@ -727,6 +727,22 @@ function readFileWithinLimit(file) {
     throw new SafeInputError("OS no-follow and nonblocking input protection is unavailable");
   }
 
+  if (isWindows) {
+    try {
+      const lstat = fs.lstatSync(file);
+      if (lstat.isSymbolicLink()) {
+        throw new SafeInputError("input must not be a symlink");
+      }
+    } catch (error) {
+      if (error instanceof SafeInputError) throw error;
+      if (error && (error.code === "ENOENT" || error.code === "ENOTDIR")) {
+        // Handled by openSync below
+      } else {
+        throw error;
+      }
+    }
+  }
+
   let descriptor;
   try {
     const flags = isWindows ? fs.constants.O_RDONLY : (fs.constants.O_RDONLY | noFollow | nonBlock);
