@@ -7,6 +7,7 @@ This document provides complete, exhaustive technical documentation for all REST
 ## 1. Global Infrastructure & Standards
 
 ### 1.1 Base URLs & Protocols
+
 - **Local Development**:
   - REST API: `http://localhost:3001`
   - WebSocket: `ws://localhost:3001` (Socket.io v4)
@@ -17,12 +18,15 @@ This document provides complete, exhaustive technical documentation for all REST
 - **Request Body Limit**: Strict `100kb` maximum body size (enforced via `express.json({ limit: '100kb' })`).
 
 ### 1.2 Request Tracing (`X-Request-Id`)
+
 Every incoming HTTP request is assigned a unique UUIDv4 identifier via `requestIdMiddleware`.
+
 - If the incoming client request provides an `X-Request-Id` header, it is validated and preserved.
 - If omitted, a fresh UUIDv4 is generated.
 - The `X-Request-Id` header is injected into the HTTP response headers and included in every structured log entry and error payload.
 
 ### 1.3 Standard Error Format
+
 All API error responses share an invariant JSON envelope:
 
 ```json
@@ -42,17 +46,17 @@ All API error responses share an invariant JSON envelope:
 
 #### Standard Error Codes Table
 
-| Error Code | HTTP Status | Meaning |
-| :--- | :--- | :--- |
-| `AUTH_MISSING` | `401 Unauthorized` | Authorization header or Bearer token is missing. |
-| `AUTH_INVALID` | `401 Unauthorized` | JWT signature verification failed, or token is malformed. |
-| `AUTH_EXPIRED` | `401 Unauthorized` | JWT `exp` timestamp has passed. |
-| `AUTH_FORBIDDEN` | `403 Forbidden` | Authenticated user lacks the required role (e.g. non-admin accessing admin route). |
-| `MFA_REQUIRED` | `403 Forbidden` | Sensitive admin action requires Supabase MFA AAL2 (`aal2`). |
-| `VALIDATION_ERROR` | `400 Bad Request` | Request parameters, query string, or JSON body violated Zod schema constraints. |
-| `NOT_FOUND` | `404 Not Found` | Requested route or database entity was not found. |
-| `RATE_LIMIT_EXCEEDED`| `429 Too Many Requests`| Exceeded allowable request quota for the assigned rate limiter tier. |
-| `INTERNAL_ERROR` | `500 Internal Server Error`| Unhandled server exception. Stack traces and raw internal messages are masked in production. |
+| Error Code            | HTTP Status                 | Meaning                                                                                      |
+| :-------------------- | :-------------------------- | :------------------------------------------------------------------------------------------- |
+| `AUTH_MISSING`        | `401 Unauthorized`          | Authorization header or Bearer token is missing.                                             |
+| `AUTH_INVALID`        | `401 Unauthorized`          | JWT signature verification failed, or token is malformed.                                    |
+| `AUTH_EXPIRED`        | `401 Unauthorized`          | JWT `exp` timestamp has passed.                                                              |
+| `AUTH_FORBIDDEN`      | `403 Forbidden`             | Authenticated user lacks the required role (e.g. non-admin accessing admin route).           |
+| `MFA_REQUIRED`        | `403 Forbidden`             | Sensitive admin action requires Supabase MFA AAL2 (`aal2`).                                  |
+| `VALIDATION_ERROR`    | `400 Bad Request`           | Request parameters, query string, or JSON body violated Zod schema constraints.              |
+| `NOT_FOUND`           | `404 Not Found`             | Requested route or database entity was not found.                                            |
+| `RATE_LIMIT_EXCEEDED` | `429 Too Many Requests`     | Exceeded allowable request quota for the assigned rate limiter tier.                         |
+| `INTERNAL_ERROR`      | `500 Internal Server Error` | Unhandled server exception. Stack traces and raw internal messages are masked in production. |
 
 ---
 
@@ -62,13 +66,13 @@ Authentication in EazifyAi is powered by Supabase Auth with asymmetric RS256 JWK
 
 ### Access Levels Table
 
-| Access Level | Middleware Pipeline | Rate Limiter | Description & Requirements |
-| :--- | :--- | :--- | :--- |
-| **Level 0: Public** | None | `publicLimiter` (60 req/min) | Accessible anonymously without any credentials. Used for health checks, public order tracking by code, and initial onboarding. |
-| **Level 1: Optional Auth** | `optionalAuth` | `publicLimiter` (60 req/min) | If a valid Bearer token is provided, `req.user` is populated and bound to the created record; if absent or invalid, the request proceeds anonymously without error. Used by the emergency fallback lead route. |
-| **Level 2: User** | `requireAuth` | `authLimiter` (20 req/min) | Requires valid Supabase JWT in `Authorization: Bearer <token>`. Used for viewing and updating personal profile data (`/v1/me`) and user orders. |
-| **Level 3: Admin** | `requireAuth` + `requireAdmin` | `adminLimiter` (120 req/min) | Requires valid JWT with `app_metadata.role === 'admin'`. Used for viewing all orders, modifying order status, and reading audit logs. |
-| **Level 4: High-Security Admin** | `requireAuth` + `requireAdmin` + `requireAAL2` | `adminLimiter` (120 req/min) | Requires valid admin JWT with Authenticator Assurance Level 2 (`aal === 'aal2'`). Used for sensitive state deletions and permission updates. |
+| Access Level                     | Middleware Pipeline                            | Rate Limiter                 | Description & Requirements                                                                                                                                                                                     |
+| :------------------------------- | :--------------------------------------------- | :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Level 0: Public**              | None                                           | `publicLimiter` (60 req/min) | Accessible anonymously without any credentials. Used for health checks, public order tracking by code, and initial onboarding.                                                                                 |
+| **Level 1: Optional Auth**       | `optionalAuth`                                 | `publicLimiter` (60 req/min) | If a valid Bearer token is provided, `req.user` is populated and bound to the created record; if absent or invalid, the request proceeds anonymously without error. Used by the emergency fallback lead route. |
+| **Level 2: User**                | `requireAuth`                                  | `authLimiter` (20 req/min)   | Requires valid Supabase JWT in `Authorization: Bearer <token>`. Used for viewing and updating personal profile data (`/v1/me`) and user orders.                                                                |
+| **Level 3: Admin**               | `requireAuth` + `requireAdmin`                 | `adminLimiter` (120 req/min) | Requires valid JWT with `app_metadata.role === 'admin'`. Used for viewing all orders, modifying order status, and reading audit logs.                                                                          |
+| **Level 4: High-Security Admin** | `requireAuth` + `requireAdmin` + `requireAAL2` | `adminLimiter` (120 req/min) | Requires valid admin JWT with Authenticator Assurance Level 2 (`aal === 'aal2'`). Used for sensitive state deletions and permission updates.                                                                   |
 
 ---
 
@@ -77,10 +81,13 @@ Authentication in EazifyAi is powered by Supabase Auth with asymmetric RS256 JWK
 ### 3.1 Health & Diagnostics
 
 #### `GET /health`
+
 Liveness check for container orchestrators and load balancers.
+
 - **Access Level**: Public (Level 0)
 - **Response Headers**: `X-Request-Id`
 - **Response `200 OK`**:
+
 ```json
 {
   "status": "ok",
@@ -89,9 +96,12 @@ Liveness check for container orchestrators and load balancers.
 ```
 
 #### `GET /health/ready`
+
 Readiness probe verifying active PostgreSQL database connectivity.
+
 - **Access Level**: Public (Level 0)
 - **Response `200 OK`** (Database healthy):
+
 ```json
 {
   "status": "ready",
@@ -99,7 +109,9 @@ Readiness probe verifying active PostgreSQL database connectivity.
   "timestamp": "2026-10-21T18:00:00.000Z"
 }
 ```
+
 - **Response `503 Service Unavailable`** (Database disconnected):
+
 ```json
 {
   "status": "unhealthy",
@@ -113,10 +125,13 @@ Readiness probe verifying active PostgreSQL database connectivity.
 ### 3.2 User Account & Profile (`/v1/me`)
 
 #### `GET /v1/me`
+
 Retrieves the profile of the currently authenticated user.
+
 - **Access Level**: User (Level 2)
 - **Headers**: `Authorization: Bearer <token>`
 - **Response `200 OK`**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -132,10 +147,13 @@ Retrieves the profile of the currently authenticated user.
 ```
 
 #### `PATCH /v1/me`
+
 Updates user profile information.
+
 - **Access Level**: User (Level 2)
 - **Headers**: `Authorization: Bearer <token>`
 - **Request Body (Zod `updateProfileSchema`)**:
+
 ```json
 {
   "name": "Ahmed Saied",
@@ -143,17 +161,21 @@ Updates user profile information.
   "phone": "01023498242"
 }
 ```
+
 - **Constraints**:
-  - `name`: String, 1–100 characters *(optional)*
-  - `job`: String, 1–100 characters *(optional)*
-  - `phone`: String, 8–30 characters *(optional)*
+  - `name`: String, 1–100 characters _(optional)_
+  - `job`: String, 1–100 characters _(optional)_
+  - `phone`: String, 8–30 characters _(optional)_
 - **Response `200 OK`**: Returns updated `MeResponse` object.
 
 #### `DELETE /v1/me`
-Deletes the current user's profile and disassociates linked records.
+
+Deletes the current user's profile, scrubs personal PII on user's associated Request records (sets `whatsapp: 'DELETED'`, `email: null`, and anonymizes customer names in `summary`), and permanently purges the user from Supabase Auth via admin client (`supabase.auth.admin.deleteUser`) under Egyptian Privacy Law 151/2020. Subsequent lookups for the user profile (`GET /v1/me`) return 404 Not Found.
+
 - **Access Level**: User (Level 2)
 - **Headers**: `Authorization: Bearer <token>`
 - **Response `200 OK`**:
+
 ```json
 {
   "success": true,
@@ -162,10 +184,13 @@ Deletes the current user's profile and disassociates linked records.
 ```
 
 #### `GET /v1/me/requests`
+
 Retrieves all requests submitted by the currently logged-in user.
+
 - **Access Level**: User (Level 2)
 - **Headers**: `Authorization: Bearer <token>`
 - **Response `200 OK`**:
+
 ```json
 {
   "requests": [
@@ -194,11 +219,14 @@ Retrieves all requests submitted by the currently logged-in user.
 ### 3.3 Public Requests & Lead Capture
 
 #### `GET /v1/requests/:publicId`
+
 Retrieves public status summary and timeline events for order tracking.
+
 - **Access Level**: Public (Level 0)
 - **Path Parameters**:
   - `publicId`: UUIDv4 or Code string (`EZ-XXXXXX`).
 - **Response `200 OK`**:
+
 ```json
 {
   "id": "7b8d0a1b-3c4d-4e5f-6a7b-8c9d0e1f2a3b",
@@ -236,10 +264,13 @@ Retrieves public status summary and timeline events for order tracking.
 ```
 
 #### `PATCH /v1/requests/:publicId`
+
 Updates contact and operational details for an existing request without creating a duplicate order.
+
 - **Access Level**: Public (Level 0) or User (Level 2)
 - **Path Parameters**: `publicId` (UUIDv4)
 - **Request Body (Zod `updateRequestDetailsSchema`)**:
+
 ```json
 {
   "whatsapp": "01098765432",
@@ -249,7 +280,9 @@ Updates contact and operational details for an existing request without creating
   "businessType": "سوبر ماركت"
 }
 ```
+
 - **Response `200 OK`**:
+
 ```json
 {
   "success": true,
@@ -257,15 +290,19 @@ Updates contact and operational details for an existing request without creating
   "message": "Request details updated successfully"
 }
 ```
+
 - **Side Effects**:
   - Appends a `DETAILS_UPDATED` event to the request's tracking timeline.
   - Revalidates the customer's `/profile` and `/track/[publicId]` views.
 
 #### `POST /v1/requests/fallback`
+
 Emergency fallback lead capture when AI assistant is offline or disabled.
+
 - **Access Level**: Optional Auth (Level 1)
-- **Headers**: *(Optional)* `Authorization: Bearer <token>`
+- **Headers**: _(Optional)_ `Authorization: Bearer <token>`
 - **Request Body (Zod `fallbackRequestSchema`)**:
+
 ```json
 {
   "problem": "عندي مشكلة في جرد المخزن وعايز باركود وتنبيهات نواقص",
@@ -274,12 +311,14 @@ Emergency fallback lead capture when AI assistant is offline or disabled.
   "businessType": "متجر أدوات منزلية"
 }
 ```
+
 - **Constraints**:
-  - `problem`: String, 5–2000 characters *(required)*
-  - `whatsapp`: String, 8–30 characters *(required, matches Egyptian phone pattern)*
-  - `name`: String, 1–100 characters *(optional)*
-  - `businessType`: String, 1–100 characters *(optional)*
+  - `problem`: String, 5–2000 characters _(required)_
+  - `whatsapp`: String, 8–30 characters _(required, matches Egyptian phone pattern)_
+  - `name`: String, 1–100 characters _(optional)_
+  - `businessType`: String, 1–100 characters _(optional)_
 - **Response `201 Created`**:
+
 ```json
 {
   "success": true,
@@ -288,14 +327,18 @@ Emergency fallback lead capture when AI assistant is offline or disabled.
   "publicId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 }
 ```
+
 - **Side Effects**:
   - If a valid Bearer token is provided, upserts the user's `Profile` and links `userId` to the request record.
   - Enqueues `request:created` background job to alert company staff via Telegram.
 
 #### `POST /v1/onboarding`
+
 Saves anonymous 4-step intake survey choices from the landing page.
+
 - **Access Level**: Public (Level 0)
 - **Request Body (Zod `submitOnboardingSchema`)**:
+
 ```json
 {
   "anonId": "anon_9k3d_8f4a1c",
@@ -308,7 +351,9 @@ Saves anonymous 4-step intake survey choices from the landing page.
   }
 }
 ```
+
 - **Response `201 Created`**:
+
 ```json
 {
   "success": true,
@@ -322,15 +367,18 @@ Saves anonymous 4-step intake survey choices from the landing page.
 ### 3.4 Administration (`/v1/admin/*`)
 
 #### `GET /v1/admin/requests`
+
 Retrieves a paginated list of all customer requests with status and text filtering.
+
 - **Access Level**: Admin (Level 3)
 - **Headers**: `Authorization: Bearer <admin-token>`
 - **Query Parameters**:
-  - `cursor`: UUID of last seen item *(optional, for keyset pagination)*
-  - `limit`: Number between 1 and 100 *(default `20`)*
-  - `status`: Filter by `NEW`, `STUDYING`, `CONTACTED`, `IN_PROGRESS`, `COMPLETED`, `REJECTED` *(optional)*
-  - `search`: Case-insensitive search on code, whatsapp, or problem description *(optional)*
+  - `cursor`: UUID of last seen item _(optional, for keyset pagination)_
+  - `limit`: Number between 1 and 100 _(default `20`)_
+  - `status`: Filter by `NEW`, `STUDYING`, `CONTACTED`, `IN_PROGRESS`, `COMPLETED`, `REJECTED` _(optional)_
+  - `search`: Case-insensitive search on code, whatsapp, or problem description _(optional)_
 - **Response `200 OK`**:
+
 ```json
 {
   "items": [
@@ -351,17 +399,22 @@ Retrieves a paginated list of all customer requests with status and text filteri
 ```
 
 #### `GET /v1/admin/requests/:id`
+
 Retrieves full details of a specific request, including internal AI analysis, missing fields, completeness score, and chronological timeline events.
+
 - **Access Level**: Admin (Level 3)
 - **Headers**: `Authorization: Bearer <admin-token>`
 - **Path Parameters**: `id` (Request UUID)
 - **Response `200 OK`**: Returns complete `AdminRequestDetail` object.
 
 #### `GET /v1/admin/analytics`
+
 Retrieves live aggregated platform analytics calculated directly from PostgreSQL.
+
 - **Access Level**: Admin (Level 3)
 - **Headers**: `Authorization: Bearer <admin-token>`
 - **Response `200 OK`**:
+
 ```json
 {
   "totalRequests": 48,
@@ -387,11 +440,14 @@ Retrieves live aggregated platform analytics calculated directly from PostgreSQL
 ```
 
 #### `PATCH /v1/admin/requests/:id`
+
 Updates operational management fields including AI score overrides, deal value, and booked consultation call slots.
+
 - **Access Level**: Admin (Level 3)
 - **Headers**: `Authorization: Bearer <admin-token>`
 - **Path Parameters**: `id` (Request UUID)
 - **Request Body (Zod `adminUpdateDetailsSchema`)**:
+
 ```json
 {
   "scoreOverride": 92,
@@ -401,23 +457,29 @@ Updates operational management fields including AI score overrides, deal value, 
   "callConfirmed": true
 }
 ```
+
 - **Response `200 OK`**: Returns the updated request item.
 - **Side Effects**: Appends an event to `RequestEvent` and records an entry in `AuditLog`.
 
 #### `PATCH /v1/admin/requests/:id/status`
+
 Updates request status and enqueues customer notification email.
+
 - **Access Level**: Admin (Level 3)
 - **Headers**: `Authorization: Bearer <admin-token>`
 - **Path Parameters**: `id` (Request UUID)
 - **Request Body (Zod `adminUpdateRequestStatusSchema`)**:
+
 ```json
 {
   "status": "IN_PROGRESS",
   "note": "تم الاتفاق على المتطلبات وجاري تسليم النسخة الأولى خلال ٤٨ ساعة"
 }
 ```
+
 - **Allowed Statuses**: `NEW`, `STUDYING`, `CONTACTED`, `IN_PROGRESS`, `COMPLETED`, `REJECTED`.
 - **Response `200 OK`**:
+
 ```json
 {
   "success": true,
@@ -426,22 +488,28 @@ Updates request status and enqueues customer notification email.
   "updatedAt": "2026-10-21T16:00:00.000Z"
 }
 ```
+
 - **Side Effects**:
   - Automatically records an entry in `AuditLog` referencing the admin `actorId`.
   - Appends a `STATUS_CHANGE` timeline event to `RequestEvent`.
   - Enqueues a `request_status_changed` job in `pg-boss` to email the customer.
 
 #### `POST /v1/admin/requests/:id/events`
+
 Appends a manual note or meeting event to the request's public tracking timeline.
+
 - **Access Level**: Admin (Level 3)
 - **Request Body**:
+
 ```json
 {
   "type": "CALL_SCHEDULED",
   "note": "تم تحديد موعد مكالمة استشارية يوم الخميس الساعة ٤ مساءً"
 }
 ```
+
 - **Response `201 Created`**:
+
 ```json
 {
   "success": true,
@@ -450,10 +518,13 @@ Appends a manual note or meeting event to the request's public tracking timeline
 ```
 
 #### `GET /v1/admin/audit-logs`
+
 Retrieves paginated immutable audit log trail of all administrative actions.
+
 - **Access Level**: Admin (Level 3)
 - **Query Parameters**: `cursor`, `limit` (1–100)
 - **Response `200 OK`**:
+
 ```json
 {
   "items": [
@@ -482,6 +553,7 @@ Retrieves paginated immutable audit log trail of all administrative actions.
 EazifyAi uses Socket.io v4 over WebSockets with polling fallback to power the live streaming AI Discovery consultation.
 
 ### 4.1 Handshake & Authentication
+
 Clients connect to `/` with credentials passed via `auth.token` or HTTP `Authorization` header:
 
 ```typescript
@@ -494,6 +566,7 @@ const socket = io('http://localhost:3001', {
   },
 });
 ```
+
 - If the token is valid, `socket.data.user` contains `{ sub, email, role, aal }`.
 - In `development` mode, if no token is provided, a dev guest profile (`sub: '00000000-0000-0000-0000-000000000001'`) is assigned automatically.
 
@@ -502,8 +575,11 @@ const socket = io('http://localhost:3001', {
 ### 4.2 Client-to-Server Events
 
 #### `message:send`
+
 Dispatches a user's text turn to the AI agent.
+
 - **Payload Schema (Zod `messageSendSchema`)**:
+
 ```json
 {
   "conversationId": "conv_m3k9z8_ab12cd",
@@ -511,25 +587,30 @@ Dispatches a user's text turn to the AI agent.
   "text": "عندي عيادة أسنان والمرضى بيغيبوا عن المواعيد والسكرتيرة بتنسى تفكرهم"
 }
 ```
+
 - **Validation Constraints**:
-  - `conversationId`: String, 1–100 characters *(required)*
-  - `clientMessageId`: String, 1–100 characters *(required, used for deduplication)*
-  - `text`: String, 1–4000 characters *(required)*
+  - `conversationId`: String, 1–100 characters _(required)_
+  - `clientMessageId`: String, 1–100 characters _(required, used for deduplication)_
+  - `text`: String, 1–4000 characters _(required)_
 - **Acknowledgment Callback**:
+
 ```json
 {
   "success": true,
   "clientMessageId": "msg_m3k9za_7f8e9"
 }
 ```
-*(Or `{ "error": { "code": "VALIDATION_ERROR", "message": "..." } }` on failure).*
+
+_(Or `{ "error": { "code": "VALIDATION_ERROR", "message": "..." } }` on failure)._
 
 ---
 
 ### 4.3 Server-to-Client Events
 
 #### `message:token`
+
 Streamed response tokens generated by the Gemini LLM. Emitted sequentially as words/chunks are produced.
+
 ```json
 {
   "conversationId": "conv_m3k9z8_ab12cd",
@@ -539,7 +620,9 @@ Streamed response tokens generated by the Gemini LLM. Emitted sequentially as wo
 ```
 
 #### `agent:summary`
+
 Emitted after each AI turn, providing real-time extraction metrics, stage progression, and brief completeness.
+
 ```json
 {
   "conversationId": "conv_m3k9z8_ab12cd",
@@ -562,7 +645,9 @@ Emitted after each AI turn, providing real-time extraction metrics, stage progre
 ```
 
 #### `message:done`
+
 Emitted when the AI turn finishes generating. Signals the client to stop the typing indicator.
+
 ```json
 {
   "conversationId": "conv_m3k9z8_ab12cd",
@@ -573,7 +658,9 @@ Emitted when the AI turn finishes generating. Signals the client to stop the typ
 ```
 
 #### `request:created`
+
 Emitted immediately when `newState.isFinished === true` and the request is successfully committed to PostgreSQL.
+
 ```json
 {
   "code": "EZ-684910",
@@ -582,8 +669,22 @@ Emitted immediately when `newState.isFinished === true` and the request is succe
 }
 ```
 
+#### `request:failed`
+
+Emitted when the conversation is complete but persisting the request fails. No fake code is issued and the client must not show a tracking link.
+
+```json
+{
+  "conversationId": "conv_m3k9z8_ab12cd",
+  "clientMessageId": "msg_m3k9za_7f8e9",
+  "code": "PERSISTENCE_ERROR"
+}
+```
+
 #### `agent:fallback`
+
 Emitted if the LangChain agent or Google Gemini API encounters an unrecoverable failure or rate limit.
+
 ```json
 {
   "conversationId": "conv_m3k9z8_ab12cd",
@@ -623,9 +724,11 @@ Emitted if the LangChain agent or Google Gemini API encounters an unrecoverable 
 EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactional background processing backed directly by PostgreSQL tables (`pgboss.*`).
 
 ### 5.1 Queue: `request_created`
+
 - **Trigger**: Fired when a request is created via the interactive AI chat (`socket/index.ts`) or via the fallback lead form (`fallback.service.ts`).
 - **Worker**: `handleTelegramNotification` (`src/jobs/workers/telegram.worker.ts`).
 - **Payload Schema**:
+
 ```json
 {
   "requestId": "7b8d0a1b-3c4d-4e5f-6a7b-8c9d0e1f2a3b",
@@ -639,12 +742,15 @@ EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactio
   "createdAt": "2026-10-21T18:00:00.000Z"
 }
 ```
+
 - **Action**: Formats an HTML notification message and posts to the company's internal operations Telegram channel via `https://api.telegram.org/bot<TOKEN>/sendMessage`.
 
 ### 5.2 Queue: `request_status_changed`
+
 - **Trigger**: Fired when an administrator updates the status of an order via `PATCH /v1/admin/requests/:id/status`.
 - **Worker**: `handleEmailNotification` (`src/jobs/workers/email.worker.ts`).
 - **Payload Schema**:
+
 ```json
 {
   "requestId": "7b8d0a1b-3c4d-4e5f-6a7b-8c9d0e1f2a3b",
@@ -657,6 +763,7 @@ EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactio
   "updatedAt": "2026-10-21T18:30:00.000Z"
 }
 ```
+
 - **Action**: Composes a branded HTML status update email with a direct public tracking link (`https://eazifyai.com/ar/track/<publicId>`) and dispatches via Resend API or SMTP fallback.
 
 ---
@@ -666,6 +773,7 @@ EazifyAi incorporates an Outbox pattern with `pg-boss` for resilient, transactio
 EazifyAi includes an interactive Telegram admin bot listener and an autonomous website health watchdog that operate concurrently with the HTTP server.
 
 ### 6.1 Interactive Telegram Bot Listener (`telegram-listener.ts`)
+
 - **Transport**: Long-polling via Telegram Bot API `getUpdates`.
 - **Authentication**: Validates that `msg.chat.id` matches the authorized `TELEGRAM_CHAT_ID`. Messages from unauthorized users receive a polite rejection and are logged.
 - **Commands**:
@@ -675,24 +783,24 @@ EazifyAi includes an interactive Telegram admin bot listener and an autonomous w
   - **Natural Language Chat**: Any non-command message from the admin is sent to Google Gemini (`gemini-2.0-flash`), which replies in a helpful Egyptian technical assistant persona.
 
 ### 6.2 Website Uptime Watchdog (`uptime-watchdog.ts`)
+
 - **Interval**: 30-second automated health polling cycle.
 - **Target**: Probes `WEB_ORIGIN` (or respects simulated outage state).
 - **Outage Alert**: When an outage occurs (or `/simulate_down` is called), sends an immediate Telegram notification:
   ```html
-  🚨 <b>تنبيه عاجل: تعطل الموقع! / Alert: Website Outage Detected!</b>
-  • الهدف: https://eazifyai.com
-  • الحالة: DOWN
-  • الوقت: 2026-10-22 04:30:00
+  🚨 <b>تنبيه عاجل: تعطل الموقع! / Alert: Website Outage Detected!</b> • الهدف: https://eazifyai.com
+  • الحالة: DOWN • الوقت: 2026-10-22 04:30:00
   ```
 - **Recovery Alert**: When health is restored (or `/simulate_up` is called):
   ```html
-  ✅ <b>تم حل المشكلة: الموقع عاد للعمل! / Website Recovered!</b>
-  • الهدف: https://eazifyai.com
-  • الحالة: UP (200 OK)
+  ✅ <b>تم حل المشكلة: الموقع عاد للعمل! / Website Recovered!</b> • الهدف: https://eazifyai.com •
+  الحالة: UP (200 OK)
   ```
 
 ### 6.3 Downtime Simulation Script
+
 Admins can trigger downtime tests directly from the terminal without manual curl calls:
+
 ```powershell
 npx tsx scripts/simulate-downtime.ts
 ```
