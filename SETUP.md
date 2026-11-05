@@ -255,6 +255,8 @@ Create a `.env.local` file in `d:\EazifyAi\eazifyai-web\.env.local`.
 | :--- | :--- | :--- | :--- | :--- |
 | `NEXT_PUBLIC_SITE_URL` | String (URL) | `http://localhost:3000` | **Yes** | Canonical public URL of the website. Used for OpenGraph tags, sitemaps, and Supabase auth redirect verification. |
 | `NEXT_PUBLIC_API_URL` | String (URL) | `http://localhost:3001` | **Yes** | Base URL for backend REST API calls (Server Actions and client fetches). |
+| `NEXT_PUBLIC_TRANSPORT_MODE` | String (`websocket` \| `http`) | `websocket` | No | Chat transport protocol. Set to `http` for serverless environments (Netlify/Pages) using Server-Sent Events (SSE). |
+| `GEMINI_API_KEY` | String | — | Conditional | Server-side Gemini API key used by the `/api/chat` route handler when `NEXT_PUBLIC_TRANSPORT_MODE=http`. Never exposed to browser. |
 | `NEXT_PUBLIC_SOCKET_URL` | String (URL) | `http://localhost:3001` | No | WebSocket URL for Socket.io real-time chat streaming. Defaults to `NEXT_PUBLIC_API_URL` if omitted. |
 | `NEXT_PUBLIC_SUPABASE_URL` | String (URL) | — | **Yes** | Supabase Project URL. Must match `SUPABASE_URL` in the API. Used by `@supabase/ssr` to manage cookies and session state. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | String | — | **Yes** | Supabase Anonymous Client Key. Safe for browser exposure. |
@@ -268,11 +270,19 @@ Create a `.env.local` file in `d:\EazifyAi\eazifyai-web\.env.local`.
 ```ini
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_TRANSPORT_MODE=websocket
 NEXT_PUBLIC_SOCKET_URL=http://localhost:3001
 NEXT_PUBLIC_SUPABASE_URL=https://xyzcompany.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAAx_sampleSiteKey_Turnstile
 ```
+
+#### Netlify & Serverless Deployments (HTTP Mode)
+When deploying to Netlify or similar serverless hosts:
+1. Set `NEXT_PUBLIC_TRANSPORT_MODE=http`
+2. Set `GEMINI_API_KEY=<your-key>` (server-side only)
+3. Set `API_URL=https://api.yourdomain.com` (for background lead forwarding)
+4. Run `netlify deploy --build`
 
 ### 6.3 Contract Verification & Type Generation
 

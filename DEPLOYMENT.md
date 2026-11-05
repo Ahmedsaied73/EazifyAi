@@ -168,10 +168,28 @@ CMD ["node", "server.js"]
    - `NEXT_PUBLIC_SOCKET_URL=https://api.eazifyai.com`
    - `NEXT_PUBLIC_SITE_URL=https://eazifyai.com`
    - `NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>`
-   - `NEXT_PUBLIC_TURNSTILE_SITE_KEY=<turnstile-site-key>`
+### 4.3 Netlify & Serverless Deployment (HTTP Transport Mode)
 
-### 4.2 Bare-Metal Linux / VPS Deployment (Ubuntu 22.04 / 24.04)
+For serverless hosts where persistent WebSockets are unavailable or restricted (e.g. Netlify, Cloudflare Pages):
+
+1. **Build Settings**:
+   - Framework preset: Next.js
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+2. **Required Environment Variables**:
+   ```ini
+   NEXT_PUBLIC_TRANSPORT_MODE=http
+   GEMINI_API_KEY=AIzaSy...              # Server-side only for /api/chat route
+   API_URL=https://api.eazifyai.com      # Server-side lead forwarding address
+   NEXT_PUBLIC_SITE_URL=https://eazifyai.com
+   NEXT_PUBLIC_API_URL=https://api.eazifyai.com
+   NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
+   ```
+3. **Transport Behavior**:
+   The web frontend automatically swaps from Socket.io to `/api/chat` using Server-Sent Events (SSE). Tokens stream progressively without persistent TCP socket connections, and customer leads are dispatched asynchronously in the background.
+
+### 4.4 Bare-Metal Linux / VPS Deployment (Ubuntu 22.04 / 24.04)
 
 #### Step 1: Install Node.js 22 LTS & Nginx
 ```bash
