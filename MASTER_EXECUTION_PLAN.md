@@ -1,5 +1,5 @@
-# EazifyAi — Master Execution Plan & Architecture Guide
-**Platform**: EazifyAi (Next.js 16 App Router + Express 5 TypeScript API + Supabase Auth & PostgreSQL)
+# EazifyAI — Master Execution Plan & Architecture Guide
+**Platform**: EazifyAI (Next.js 16 App Router + Express 5 TypeScript API + Supabase Auth & PostgreSQL)
 **Author**: Engineering Lead / Antigravity Agent
 **Status**: Approved Master Guide — Phases 1 through 6 Production Ready; Phase 7 Deployment Prepared
 
@@ -7,7 +7,7 @@
 
 ## 1. Architecture & System Overview
 
-EazifyAi is an enterprise-grade AI automation and workflow consultation platform tailored for entrepreneurs, businesses, and clinics in Egypt and the MENA region.
+EazifyAI is an enterprise-grade AI automation and workflow consultation platform tailored for entrepreneurs, businesses, and clinics in Egypt and the MENA region.
 
 ### Core Architecture Components
 1. **Frontend (`eazifyai-web`)**:
@@ -91,7 +91,7 @@ EazifyAi is an enterprise-grade AI automation and workflow consultation platform
    TELEGRAM_BOT_TOKEN=<telegram-bot-token>
    TELEGRAM_CHAT_ID=<telegram-chat-id>
    RESEND_API_KEY=<resend-api-key>
-   SMTP_FROM=EazifyAi <notifications@eazify.ai>
+   SMTP_FROM=EazifyAI <notifications@eazify.ai>
    LOG_LEVEL=info
    ```
 5. **Health Check Path**: `/health` (returns 200 OK with database connection status).

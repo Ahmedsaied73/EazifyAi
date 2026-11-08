@@ -1,4 +1,4 @@
-# ANIMATIONS.md — every animation, transition and motion driver in the EazifyAi site
+# ANIMATIONS.md — every animation, transition and motion driver in the EazifyAI site
 
 Source of truth: `design-reference/app/src/styles.css` (site layer, lines 115-750) and the five JS drivers listed in section 1. Nothing here uses an animation library. Copy the CSS verbatim and the JS verbatim; this file explains what each piece does so the port can be verified, not so it can be rewritten.
 

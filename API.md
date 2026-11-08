@@ -1,6 +1,6 @@
-# EazifyAi API & WebSocket Specification
+# EazifyAI API & WebSocket Specification
 
-This document provides exhaustive, contract-grade technical documentation for all REST API endpoints, real-time Socket.io streaming events, authentication and authorization schemes, rate limiting tiers, error envelopes, and background worker queues across the EazifyAi platform.
+This document provides exhaustive, contract-grade technical documentation for all REST API endpoints, real-time Socket.io streaming events, authentication and authorization schemes, rate limiting tiers, error envelopes, and background worker queues across the EazifyAI platform.
 
 ---
 
@@ -63,7 +63,7 @@ All REST API error responses adhere to an invariant JSON envelope:
 
 ## 2. Authentication & Authorization Hierarchy
 
-Authentication in EazifyAi is built upon Supabase Auth, verified asymmetrically on the API via remote JSON Web Key Sets (JWKS) using `jose`.
+Authentication in EazifyAI is built upon Supabase Auth, verified asymmetrically on the API via remote JSON Web Key Sets (JWKS) using `jose`.
 
 ```
                     ┌──────────────────────────────────────────────┐

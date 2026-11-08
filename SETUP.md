@@ -1,12 +1,12 @@
-# EazifyAi — Comprehensive Setup & Environment Configuration Guide
+# EazifyAI — Comprehensive Setup & Environment Configuration Guide
 
-This guide provides end-to-end instructions for configuring, provisioning, running, and deploying the complete EazifyAi platform locally and across production environments.
+This guide provides end-to-end instructions for configuring, provisioning, running, and deploying the complete EazifyAI platform locally and across production environments.
 
 ---
 
 ## 1. System Architecture Overview
 
-EazifyAi is architected as an integrated full-stack monorepo consisting of two primary services:
+EazifyAI is architected as an integrated full-stack monorepo consisting of two primary services:
 
 - **`eazifyai-api`** (Backend): Express 5 (native ESM), Prisma 7, PostgreSQL, Socket.io 4.8 real-time streaming, Google Gemini AI Discovery Agent (LangChain / LangGraph), pg-boss asynchronous job queues, Cloudflare Turnstile bot verification, Redis Socket.io adapter, and Telegram administrative webhooks.
 - **`eazifyai-web`** (Frontend): Next.js 16 (Turbopack), React 19, `@supabase/ssr` authentication, bidirectional Egyptian Arabic (`ar`) and English (`en`) internationalization (`next-intl`), zero-runtime CSS design tokens, and live interactive AI discovery chat.
@@ -66,7 +66,7 @@ Create a `.env` file in `d:\EazifyAi\eazifyai-api\.env`.
 | `SUPABASE_URL` | String (URL) | — | **Yes** | Supabase Project URL (`https://<project-ref>.supabase.co`). Used to fetch remote JWKS keys (`/auth/v1/.well-known/jwks.json`) and initialize Supabase clients. |
 | `SUPABASE_ANON_KEY` | String | — | **Yes** | Public client key for Supabase Auth. Safe to share with client applications. |
 | `SUPABASE_SERVICE_ROLE_KEY` | String | — | **Yes** | Master privileged service key bypassing Row Level Security. **Strictly backend only.** Used for administrative user role assignment (`app_metadata.role = 'admin'`). |
-| `SUPABASE_JWT_SECRET` | String | — | No | Legacy symmetric JWT secret. Optional because EazifyAi uses asymmetric RS256 JWKS verification by default. |
+| `SUPABASE_JWT_SECRET` | String | — | No | Legacy symmetric JWT secret. Optional because EazifyAI uses asymmetric RS256 JWKS verification by default. |
 | `JWT_SECRET` | String | — | No | Secret used to sign and verify HMAC-SHA256 capability tokens (`manageToken`) for anonymous order management. Defaults to `SUPABASE_JWT_SECRET` or `SUPABASE_SERVICE_ROLE_KEY` if omitted. |
 | `DATABASE_URL` | String (URL) | — | **Yes** | Connection-pooled PostgreSQL connection string (PgBouncer port `6543` on Supabase). Used by Prisma Client for routine queries. Format: `postgresql://postgres.[ref]:[pass]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true` |
 | `DIRECT_DATABASE_URL` | String (URL) | — | **Yes** | Direct unpooled PostgreSQL connection string (port `5432` on Supabase). **Mandatory** for Prisma migrations (`prisma migrate`) and `pg-boss` queues requiring advisory locks and LISTEN/NOTIFY. Format: `postgresql://postgres:[pass]@db.[ref].supabase.co:5432/postgres` |
@@ -135,7 +135,7 @@ TELEGRAM_CHAT_ID=7710040347
 
 # Customer Email Notifications
 RESEND_API_KEY=re_1234567890abcdef
-SMTP_FROM=EazifyAi <orders@eazifyai.com>
+SMTP_FROM=EazifyAI <orders@eazifyai.com>
 
 # Logging
 LOG_LEVEL=info
@@ -190,7 +190,7 @@ npx prisma db push
 
 ## 5. Administrative Seeding & Access Setup
 
-EazifyAi uses role-based access control (RBAC). Admin authorization requires `app_metadata.role === 'admin'` embedded within the Supabase JWT.
+EazifyAI uses role-based access control (RBAC). Admin authorization requires `app_metadata.role === 'admin'` embedded within the Supabase JWT.
 
 > **Security Rule**: The admin role must **always** be stored in `app_metadata` (which can only be modified by the Supabase Service Role key). Never store roles in `user_metadata` (which is client-writable).
 

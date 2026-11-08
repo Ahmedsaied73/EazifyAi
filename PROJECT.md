@@ -1,4 +1,4 @@
-# Project: Higgsfield EazifyAi Design Port to eazifyai-web
+# Project: Higgsfield EazifyAI Design Port to eazifyai-web
 
 ## Architecture
 - **Framework**: Next.js 16 (App Router, Turbopack, React 19).

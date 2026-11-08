@@ -1,9 +1,9 @@
-# EazifyAi — spec.md (source of truth for the AI coder)
+# EazifyAI — spec.md (source of truth for the AI coder)
 
 > Read this file first, every session. If code and spec disagree, stop and ask. Product decisions live in the PRD doc; this file is the technical translation. Rules for writing code: `CODE_STANDARDS.md`. Current work: `PHASE_1.md`.
 
 ## 1. Product in one paragraph
-EazifyAi is a bilingual (Arabic-first, Egyptian dialect; English second) company site for small-business owners. The landing page is a chat box. A Gemini-powered agent listens to the visitor's problem, asks only what is needed, extracts a structured request, and stores it. The founder (the only admin) is notified instantly on Telegram and email, studies the request, replies on WhatsApp. Visitors track their request through a private link or an optional account.
+EazifyAI is a bilingual (Arabic-first, Egyptian dialect; English second) company site for small-business owners. The landing page is a chat box. A Gemini-powered agent listens to the visitor's problem, asks only what is needed, extracts a structured request, and stores it. The founder (the only admin) is notified instantly on Telegram and email, studies the request, replies on WhatsApp. Visitors track their request through a private link or an optional account.
 
 ## 2. Non-negotiables (decided by the founder)
 - Two separate repos: `eazifyai-web` (Next.js) and `eazifyai-api` (Node + Express). No monorepo, no shared package.
@@ -98,7 +98,7 @@ Facts about the Higgsfield source (checked): it is React 19 on TanStack Start. T
 One typed object, the only place these values exist:
 ```ts
 export const brand = {
-  name: 'EazifyAi', founderName: 'Ahmed Saied', founderRole: '', tagline: { ar: '', en: '' },
+  name: 'EazifyAI', founderName: 'Ahmed Saied', founderRole: '', tagline: { ar: '', en: '' },
   whatsapp: { number: '201023498242', display: '01023498242' },
   email: '', siteUrl: process.env.NEXT_PUBLIC_SITE_URL!,
   social: {}, proof: { works: [], quotes: [] },   // real proof only; empty = honest "we're just starting" card

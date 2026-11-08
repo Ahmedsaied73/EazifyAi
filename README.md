@@ -1,4 +1,4 @@
-# EazifyAi
+# EazifyAI
 
 > **Simple AI-Powered Software & Automation for Small Egyptian Businesses and Professionals.**  
 > نسهّلها عليك ونطوّر شغلك بالذكاء الاصطناعي.
@@ -7,9 +7,9 @@
 
 ## 1. Overview
 
-EazifyAi is a production-grade software and automation platform that connects non-technical Egyptian business owners (clinics, pharmacies, private tutors, workshops, retailers, merchants) with custom AI tools, workflow automation, and lightweight management software.
+EazifyAI is a production-grade software and automation platform that connects non-technical Egyptian business owners (clinics, pharmacies, private tutors, workshops, retailers, merchants) with custom AI tools, workflow automation, and lightweight management software.
 
-Rather than forcing clients through complex forms or confusing technical jargon, EazifyAi features an **interactive AI Discovery Agent** that conducts a friendly, 2-minute Egyptian Arabic consultation, extracts core operational bottlenecks, calculates a structured completeness score, generates an executive problem brief, and immediately provisions a tracked request with real-time status updates and WhatsApp/email follow-ups.
+Rather than forcing clients through complex forms or confusing technical jargon, EazifyAI features an **interactive AI Discovery Agent** that conducts a friendly, 2-minute Egyptian Arabic consultation, extracts core operational bottlenecks, calculates a structured completeness score, generates an executive problem brief, and immediately provisions a tracked request with real-time status updates and WhatsApp/email follow-ups.
 
 ---
 

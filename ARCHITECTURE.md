@@ -1,18 +1,18 @@
-# EazifyAi — System Architecture & Technical Specifications
+# EazifyAI — System Architecture & Technical Specifications
 
-This document defines the high-level architecture, component topology, state machines, data models, security frameworks, and scalability mechanisms powering the EazifyAi platform.
+This document defines the high-level architecture, component topology, state machines, data models, security frameworks, and scalability mechanisms powering the EazifyAI platform.
 
 ---
 
 ## 1. High-Level System Architecture & Component Topology
 
-EazifyAi separates concerns into two cohesive layers: an SSR-optimized Next.js 16 frontend and an Express 5 real-time backend, backed by PostgreSQL, Supabase Auth, Redis, and Google Gemini AI.
+EazifyAI separates concerns into two cohesive layers: an SSR-optimized Next.js 16 frontend and an Express 5 real-time backend, backed by PostgreSQL, Supabase Auth, Redis, and Google Gemini AI.
 
 ```mermaid
 flowchart TB
     subgraph ClientLayer ["1. Client & Edge Layer"]
         User["Egyptian Business Owner / Client"]
-        AdminUser["EazifyAi Operations Admin"]
+        AdminUser["EazifyAI Operations Admin"]
         Cloudflare["Cloudflare Edge Network\n- Full Strict TLS\n- Turnstile Bot Verification\n- DDoS & WAF\n- WebSocket Proxy"]
     end
 
@@ -65,7 +65,7 @@ flowchart TB
 
 ## 2. End-to-End User Journey State Machine
 
-The core value of EazifyAi is removing friction from the software procurement process for non-technical Egyptian clients. The following state machine illustrates the complete lifecycle from anonymous discovery to completed software delivery:
+The core value of EazifyAI is removing friction from the software procurement process for non-technical Egyptian clients. The following state machine illustrates the complete lifecycle from anonymous discovery to completed software delivery:
 
 ```mermaid
 stateDiagram-v2
@@ -244,7 +244,7 @@ Security is baked into every architectural boundary through defense-in-depth pri
 
 ## 5. Scalability Architecture
 
-EazifyAi is designed for reliable horizontal scaling across containerized cloud environments:
+EazifyAI is designed for reliable horizontal scaling across containerized cloud environments:
 
 ### 5.1 Transactional Database Outbox Pattern
 Directly emitting network requests (emails, Telegram notifications) inside an API request lifecycle creates two failure risks:

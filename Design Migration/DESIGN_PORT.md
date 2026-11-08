@@ -1,4 +1,4 @@
-# DESIGN_PORT.md — Port the Higgsfield EazifyAi site to Next.js 16 (plain CSS, no Tailwind)
+# DESIGN_PORT.md — Port the Higgsfield EazifyAI site to Next.js 16 (plain CSS, no Tailwind)
 
 Audience: the AI coding agent that builds `eazifyai-web`. Read this whole file, then `ANIMATIONS.md`, then `PROMPT_FOR_AGENT.md`.
 Goal: the production site looks and moves **exactly** like the Higgsfield site (https://eazifyai.higgsfield.app). Same pixels, same motion, same fonts, same text. Improvements come after launch, never during the port.
@@ -23,7 +23,7 @@ Proof (already checked): `grep -rn "components/\|@higgsfield\|radix\|lucide\|tai
 
 | Path in `design-reference/app/` | What it is | Port as |
 |---|---|---|
-| `src/styles.css` **lines 115 to 750 only** (starts at the comment `/* EazifyAi site layer ... */`) | All site CSS: tokens, layout, 39 keyframes, every component style, RTL overrides, reduced-motion rules | `app/globals.css`, copied verbatim |
+| `src/styles.css` **lines 115 to 750 only** (starts at the comment `/* EazifyAI site layer ... */`) | All site CSS: tokens, layout, 39 keyframes, every component style, RTL overrides, reduced-motion rules | `app/globals.css`, copied verbatim |
 | `src/site/Site.tsx` | Provider, header, footer, scroll bar, reveal hook, notification bell | `site/Site.tsx` |
 | `src/site/Logo.tsx` | The SVG logo with all motion variants | `site/Logo.tsx` |
 | `src/site/Demo.tsx` | Scroll-driven "agent demo" section on the home page | `site/Demo.tsx` |
@@ -105,7 +105,7 @@ Original `__root.tsx` head:
 Body stack (do not change): `"Geist","IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif`, `line-height:1.7`.
 
 Gotchas that change pixels if you "fix" them:
-1. **Weight 700 is requested but never loaded.** `.ez-fmark` (the huge faint "EazifyAi" in the footer) sets `font-weight:700`. Because 700 is not loaded the browser draws 600. Keep loading 300/400/500/600 only. Do not add 700.
+1. **Weight 700 is requested but never loaded.** `.ez-fmark` (the huge faint "EazifyAI" in the footer) sets `font-weight:700`. Because 700 is not loaded the browser draws 600. Keep loading 300/400/500/600 only. Do not add 700.
 2. Arabic letter-spacing is reset with `:lang(ar) h1/.ez-h2 {letter-spacing:0}` and English headings use negative tracking (`-.035em` etc.). This relies on `<html lang>` being correct. Keep it set per locale.
 3. Numbers are formatted with `toLocaleString("ar-EG")` / `toLocaleDateString("ar-EG")` in Arabic mode (Arabic-Indic digits). Keep those calls.
 
@@ -184,7 +184,7 @@ Spacing/radius scale used everywhere: radii `999px` (pills), `28px` (chat box/wi
 |---|---|
 | `createFileRoute("/x")({ head, component })` | `app/[locale]/x/page.tsx` (server) with `generateMetadata`, rendering a client component |
 | `pageHead(title, desc, path, noindex)` in `seo.ts` | returns a `Metadata`: `title`, `description`, `openGraph {title, description, url}`, `twitter {title, description}`, `alternates.canonical`, and `robots: {index:false, follow:false}` when `noindex` |
-| `head: scripts: [{type:"application/ld+json"}]` on `/` | `<script type="application/ld+json">` inside the home page (Organization: name EazifyAi, url, logo `/favicon.svg`) |
+| `head: scripts: [{type:"application/ld+json"}]` on `/` | `<script type="application/ld+json">` inside the home page (Organization: name EazifyAI, url, logo `/favicon.svg`) |
 | `import appCss from "../styles.css?url"` | `import "./globals.css"` in `app/layout.tsx` |
 | `HeadContent`, `Scripts`, `RootShell`, `shellComponent` | `app/layout.tsx` returning `<html><body>`; add `suppressHydrationWarning` |
 | `Link to="/privacy"` (TanStack) in the footer | `next/link` `href="/privacy"` (locale-aware in step B) |
@@ -211,9 +211,9 @@ All pages (except `/brand`) set `<title>` and description through `pageHead`. `n
 
 | Route | Title (ar) | noindex | Contents (top to bottom) |
 |---|---|---|---|
-| `/` | EazifyAi: حلول بسيطة بالذكاء الاصطناعي لشغلك | no | **Hero** (`.ez-first`): two drifting orbs, optional greeting pill, `Logo size 160 animate rich`, wordmark `Eazify<b>Ai</b>`, h1 split into words (`.ez-w`), sub, "meet the agent" pill (`.ez-meet`), scroll cue (`.ez-cue`). **AgentDemo** (`#agent`). **How** (`#how`: h2 + card with 3 numbered steps). **Audience** (`#aud`: 4 bento cards with SVG icons). **Onboard** (4-question card). **Ideas table** (`#ideas`: note + 3-column table + status pills). **Proof** (honest card). **CTA** block. **Float** button (appears after 78% scroll) |
+| `/` | EazifyAI: حلول بسيطة بالذكاء الاصطناعي لشغلك | no | **Hero** (`.ez-first`): two drifting orbs, optional greeting pill, `Logo size 160 animate rich`, wordmark `Eazify<b>Ai</b>`, h1 split into words (`.ez-w`), sub, "meet the agent" pill (`.ez-meet`), scroll cue (`.ez-cue`). **AgentDemo** (`#agent`). **How** (`#how`: h2 + card with 3 numbered steps). **Audience** (`#aud`: 4 bento cards with SVG icons). **Onboard** (4-question card). **Ideas table** (`#ideas`: note + 3-column table + status pills). **Proof** (honest card). **CTA** block. **Float** button (appears after 78% scroll) |
 | `/chat` | احكيلنا مشكلتك | no | `main.ez-wrap.ez-chatpage` > `Chat` (chat box + live brief card + Journey after completion + History) |
-| `/about` | عن EazifyAi وإزاي بنشتغل | no | hero (logo 120 + h1 + sub + 4 chips), "who we are", "what we do / don't" (two cards with animated check/cross icons), "how we work" (numbered timeline), "AI note" card (gradient border), founder block (photo with spinning ring, 3 floating tags, bio/quote placeholders), contact form (`#contact`, honeypot field, WhatsApp link) |
+| `/about` | عن EazifyAI وإزاي بنشتغل | no | hero (logo 120 + h1 + sub + 4 chips), "who we are", "what we do / don't" (two cards with animated check/cross icons), "how we work" (numbered timeline), "AI note" card (gradient border), founder block (photo with spinning ring, 3 floating tags, bio/quote placeholders), contact form (`#contact`, honeypot field, WhatsApp link) |
 | `/brand` | (no head) | (disallowed in robots) | logo lockups (4: dark/light x horizontal/stacked), two small-size mark variants with 16-96px tiles, tab/WhatsApp previews, SVG and PNG download buttons |
 | `/login` | تسجيل الدخول | yes | two-column: orbit visual (core glow, 3 rotating rings, logo 120, chat bubble with dots, 4 floating chips from `t.aud.items`) + card form with floating labels, show/hide password, shake on error, spinner, success check, redirect to `/chat` after 1500 ms |
 | `/register` | حساب جديد | yes | one question per screen (name, email, password with 4-bar strength meter), `1 / 3` counter, logo with ping ring, success burst, redirect after 1900 ms |
@@ -312,10 +312,10 @@ Run the visual suite after every step. A step is done only when it passes.
 0. **Baseline first.** Unzip the snapshot into `design-reference/`, verify `MANIFEST.sha256`. Run the original (`bun install && bun run dev` inside `design-reference/app`, or point Playwright at https://eazifyai.higgsfield.app) and capture baselines: every route x `ar`/`en` x `dark`/`light` x viewports 390, 768, 1280 (13 routes; `/profile` and `/track` need seeded `localStorage`, `/admin` needs a created admin; see section 11).
 1. **Scaffold.** `create-next-app` (Next 16, TypeScript, App Router, **no Tailwind**, no `src/` dir). Add the `<link>` fonts (section 3). Create `app/globals.css` from the site layer:
    `sed -n '115,$p' design-reference/app/src/styles.css > app/globals.css`
-   (line 115 is the `EazifyAi site layer` comment; verify with `grep -n "EazifyAi site layer" styles.css`). Import it once in `app/layout.tsx`.
+   (line 115 is the `EazifyAI site layer` comment; verify with `grep -n "EazifyAI site layer" styles.css`). Import it once in `app/layout.tsx`.
 2. **Copy files verbatim** (`site/*`, `admin/*`, `public/favicon.svg`, `public/og.png`), add `"use client"`, change only the imports listed in section 6, swap `submitLead` for the mock.
 3. **Routes.** Create each `page.tsx` + `*-client.tsx` per section 7, keeping `<Site>` inside each page.
-4. **Layout shell.** `app/layout.tsx`: `<html lang="ar" dir="rtl" data-theme="dark" style={{colorScheme:"dark"}} suppressHydrationWarning>`, fonts, default metadata (from `app-meta.json`: title "EazifyAi: حلول بسيطة بالذكاء الاصطناعي لشغلك", description, og image `/og.png` 1200x630, `og:locale ar_EG`, `og:site_name EazifyAi`, `twitter:card summary_large_image`, author EazifyAi, favicon `/favicon.svg`).
+4. **Layout shell.** `app/layout.tsx`: `<html lang="ar" dir="rtl" data-theme="dark" style={{colorScheme:"dark"}} suppressHydrationWarning>`, fonts, default metadata (from `app-meta.json`: title "EazifyAI: حلول بسيطة بالذكاء الاصطناعي لشغلك", description, og image `/og.png` 1200x630, `og:locale ar_EG`, `og:site_name EazifyAI`, `twitter:card summary_large_image`, author EazifyAI, favicon `/favicon.svg`).
 5. **Not found / error / sitemap / robots.**
 6. **Run the parity suite** (section 11). Fix differences by fixing the port, never the original.
 7. **Step B (no pixel change):** `styles/tokens.css` (primitives -> semantic -> component), stylelint ban on raw colors outside it, `config/brand.ts` + `useT()` with `{brand}` `{founder}` `{whatsapp}` `{email}`, move `i18n.ts` into `messages/ar.json` / `en.json` (same keys), switch language to next-intl routing. Re-run the suite after every batch.

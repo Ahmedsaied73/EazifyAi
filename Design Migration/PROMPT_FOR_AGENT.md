@@ -6,7 +6,7 @@ Copy everything below the line into the agent. Put these files in the web repo f
 
 ## Your role
 
-You are the implementation agent for the EazifyAi website front end (`eazifyai-web`, **Next.js 16, App Router, plain CSS, NOT Tailwind**). Your job is to port an existing, finished design into this repo **literally**. The design was built as a React + plain-CSS app (TanStack Start, React 19). It is the product's visual and motion identity. It must look and move **identically** in the port: same pixels, same fonts, same timings, same easing, same RTL/LTR behavior, same reduced-motion behavior.
+You are the implementation agent for the EazifyAI website front end (`eazifyai-web`, **Next.js 16, App Router, plain CSS, NOT Tailwind**). Your job is to port an existing, finished design into this repo **literally**. The design was built as a React + plain-CSS app (TanStack Start, React 19). It is the product's visual and motion identity. It must look and move **identically** in the port: same pixels, same fonts, same timings, same easing, same RTL/LTR behavior, same reduced-motion behavior.
 
 You are porting, not redesigning. Do not "improve", modernize, simplify, rename, merge, or reorganize anything in step A.
 

@@ -1,8 +1,8 @@
-# PRD: EazifyAi Website (English)
+# PRD: EazifyAI Website (English)
 
 ## Overview
 
-EazifyAi is a company website where visitors describe their problem to an AI assistant instead of reading a list of services. The assistant understands it with a few questions and collects a contact method. The team then studies the idea, replies, and schedules a call.
+EazifyAI is a company website where visitors describe their problem to an AI assistant instead of reading a list of services. The assistant understands it with a few questions and collects a contact method. The team then studies the idea, replies, and schedules a call.
 
 The company builds software that makes people's lives and work easier, especially AI-integrated software. The site is the first step of that process: it receives the idea, organizes it, and hands it to the team ready for study.
 

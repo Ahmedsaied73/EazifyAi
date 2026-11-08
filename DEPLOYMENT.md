@@ -1,6 +1,6 @@
-# EazifyAi — Production Deployment & Operations Runbook
+# EazifyAI — Production Deployment & Operations Runbook
 
-This runbook provides comprehensive instructions for deploying, scaling, hardening, and operating the EazifyAi platform in production environments.
+This runbook provides comprehensive instructions for deploying, scaling, hardening, and operating the EazifyAI platform in production environments.
 
 ---
 
@@ -200,7 +200,7 @@ sudo apt-get install -y nodejs nginx certbot python3-certbot-nginx
 #### Step 2: Systemd Service Configuration (`/etc/systemd/system/eazifyai-api.service`)
 ```ini
 [Unit]
-Description=EazifyAi API Backend Service
+Description=EazifyAI API Backend Service
 After=network.target
 
 [Service]
@@ -256,7 +256,7 @@ sudo certbot --nginx -d api.eazifyai.com
 
 ## 5. Cloudflare Edge Configuration
 
-When placing EazifyAi behind Cloudflare:
+When placing EazifyAI behind Cloudflare:
 
 1. **SSL/TLS Mode**: Select **Full (strict)**. Ensure the origin server presents a valid certificate.
 2. **WebSocket Support**: Navigate to **Network** -> Enable **WebSockets** (ON).
