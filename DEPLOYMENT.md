@@ -19,16 +19,13 @@ npm run typecheck
 # 2. Strict ESLint rules (including architecture boundary rules)
 npm run lint
 
-# 3. Code formatting
-npm run format:check
+# 3. Vitest automated test suite (470+ unit, integration, scale, evals)
+npm test
 
 # 4. OpenAPI Specification synchronization check
 npm run openapi:check
 
-# 5. Vitest automated test suite (unit, integration, scale, evals)
-npm test
-
-# 6. Production build compilation
+# 5. Production build compilation
 npm run build
 ```
 
@@ -46,13 +43,16 @@ npm run lint
 # 3. CSS Stylelint
 npm run stylelint
 
-# 4. Translation key synchronization check (ar.json vs en.json)
+# 4. Automated unit, integration, route, guard, and admin tests
+npm test
+
+# 5. Translation key synchronization check (all 426 keys in ar.json vs en.json)
 npm run i18n:check
 
-# 5. Type contract verification with backend openapi.json
+# 6. Type contract verification with backend openapi.json
 npm run contract-check
 
-# 6. Production Next.js build
+# 7. Production Next.js build
 npm run build
 ```
 
@@ -326,3 +326,47 @@ npx tsx scripts/simulate-downtime.ts
 
 ### 8.3 Sentry Crash Reporting
 Set `SENTRY_DSN` in `eazifyai-api/.env` and `NEXT_PUBLIC_SENTRY_DSN` in `eazifyai-web/.env.local`. Unhandled rejections, 500 errors, and agent failures are automatically aggregated with full stack traces and `X-Request-Id` correlation tags.
+
+---
+
+## 9. Production Feature Verification & Architecture Runbook
+
+### 9.1 Complete Design Handoff Port
+The production deployment packages the full design reference handoff:
+1. **8 Animated Service Scenes**:
+   - Clinic & Medical Booking (`/services/clinic` or `agents`)
+   - WhatsApp Commerce Bot (`/services/whatsapp` or `flow`)
+   - Retail & Store Automation (`/services/retail` or `web`)
+   - Private Tutor & Academy Assistant (`/services/tutors`)
+   - Restaurant & Café Order Dispatcher (`/services/restaurant`)
+   - Workshop & Crafts Job Tracker (`/services/workshop`)
+   - Real Estate & Broker Lead Qualifier (`/services/realestate`)
+   - Custom AI Software (`/services/custom`)
+   - Powered by interactive multi-step CSS motion diagrams, live queue/attendance simulators, and localized copy.
+2. **SvcMenu Mega-Menu**: Multi-category navigation dropdown with badge tags, service icons, and direct localized links.
+3. **Bento Industries Grid**: Homepage showcase replacing the legacy mock table.
+4. **OrderModal (`ez-order` Event)**: Universal conversion modal listening to `window.dispatchEvent(new CustomEvent('ez-order', { detail: { serviceId } }))`. Validates Egyptian phone numbers (`010`, `011`, `012`, `015`), prevents layout shifts, and dispatches leads immediately.
+5. **Removal of `#ideas`**: Cleaned up mock table in favor of production Bento grid and interactive 3-stage `AgentDemo`.
+6. **CtaAurora**: Dynamic aurora glow banner for instant discovery initiation.
+
+### 9.2 Modern Architecture & Supabase SSR Auth
+- **Next.js 16 (App Router) + React 19 + Turbopack**: Server Components, Server Actions (`updateRequestStatusAction`, `updateCallSlotAction`, `updateAgentFeedbackAction`), zero-runtime CSS tokens.
+- **Express 5 (Native ESM) + Prisma 7.10**: Strict clean architecture (`routes` ➔ `controllers` ➔ `services` ➔ `repositories`).
+- **Supabase SSR Auth**: Elimination of `localStorage` mock auth. Cookie-based session validation via `@supabase/ssr`, server-side route guards, profile management, and confirmation logout modal.
+- **PostgreSQL Database**: UUID primary keys, JSONB executive problem briefs, connection pooling via PgBouncer (6543) and unpooled direct migrations (5432).
+
+### 9.3 Operations & Admin Dashboard (`/admin`)
+- **Bilingual Status & Urgency Filtering**: Full Arabic (`ST`, `URG`, `JOBS`) and English (`ST_EN`, `URG_EN`, `JOBS_EN`) parallel dictionaries, cross-language job matching, and urgency sort priority.
+- **Idea Scoring & Rating Sliders**: Interactive 1–5 sliders for **Fit**, **Ease**, and **Value** with weighted scoring `(fit*2 + ease*1 + value*2) * 10`, debounced API synchronization, and optimistic UI updates.
+- **Consultation Calendar**: Day and slot booking (`١٠ ص إلى ١٢ ظ`, `١ إلى ٣ ع`, `٦ إلى ٨ م`), confirmation toggles, and visual conflict detection indicators across overlapping appointments.
+- **Analytics & Financial Forecasting**: Dynamic deal value aggregation, conversion rate analysis, and pipeline metrics.
+
+### 9.4 Live Fallback Lead Creation, Tracking & Dual-Transport Chat
+- **Live Fallback Lead Creation**: `/v1/requests` endpoint and client fallback with Egyptian phone normalization, 6-digit reference code generation (`EZ-XXXXXX`), and UUID `publicId`.
+- **Public Request Tracking (`/track/[publicId]`)**: Real-time interactive timeline displaying request status milestones (`NEW`, `STUDYING`, `CONTACTED`, `IN_PROGRESS`, `COMPLETED`, `REJECTED`), consultation appointment details, and project notes.
+- **Dual-Transport Discovery Chat**:
+  - **Socket.io Streaming**: Low-latency bi-directional streaming for persistent Node.js servers with turn registry mutex.
+  - **Server-Sent Events (`/api/chat`)**: Ultra-fast HTTP SSE fallback for serverless/edge environments (Netlify, Vercel) with Google Gemini 2.0 Flash (`gemini-flash-lite-latest`).
+  - **Automatic Lead Extraction**: Real-time detection and extraction of Egyptian phone numbers, emails, customer names, and business categories from live conversation history.
+  - **Discovery Agent Deepen Mode**: Context-aware clarifying questions and structured completion detection ("كفاية كده" / "stop").
+
