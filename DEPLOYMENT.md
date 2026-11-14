@@ -356,9 +356,9 @@ The production deployment packages the full design reference handoff:
 - **PostgreSQL Database**: UUID primary keys, JSONB executive problem briefs, connection pooling via PgBouncer (6543) and unpooled direct migrations (5432).
 
 ### 9.3 Operations & Admin Dashboard (`/admin`)
-- **Bilingual Status & Urgency Filtering**: Full Arabic (`ST`, `URG`, `JOBS`) and English (`ST_EN`, `URG_EN`, `JOBS_EN`) parallel dictionaries, cross-language job matching, and urgency sort priority.
-- **Idea Scoring & Rating Sliders**: Interactive 1–5 sliders for **Fit**, **Ease**, and **Value** with weighted scoring `(fit*2 + ease*1 + value*2) * 10`, debounced API synchronization, and optimistic UI updates.
-- **Consultation Calendar**: Day and slot booking (`١٠ ص إلى ١٢ ظ`, `١ إلى ٣ ع`, `٦ إلى ٨ م`), confirmation toggles, and visual conflict detection indicators across overlapping appointments.
+- **Bilingual Status & Urgency Filtering**: Full Arabic (`ST`, `URG`, `JOBS`) and English (`ST_EN`, `URG_EN`, `JOBS_EN`) parallel dictionaries, interactive status and urgency filter chips, cross-language job and urgency matching (`jobMatches`, `urgencyMatches`), and urgency sort priority.
+- **Idea Scoring & Rating Sliders**: Interactive 1–5 sliders for **Fit**, **Ease**, and **Value** with scoring formula `Math.round(((fit + ease + value) / 15) * 100)`, debounced API synchronization, and optimistic UI updates.
+- **Consultation Calendar**: Day and slot booking (`١٠ ص إلى ١٢ ظ`, `١ إلى ٣ ع`, `٦ إلى ٨ م`), confirmation toggles, conflict alert banner, `.ez-conflict-badge`, and visual conflict detection indicators across overlapping appointments.
 - **Analytics & Financial Forecasting**: Dynamic deal value aggregation, conversion rate analysis, and pipeline metrics.
 
 ### 9.4 Live Fallback Lead Creation, Tracking & Dual-Transport Chat

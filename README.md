@@ -110,9 +110,9 @@ The user interface implements the complete design handoff specification:
 - **Clean Architecture Invariants**: Strict layer isolation in `eazifyai-api` (`routes` ➔ `controllers` ➔ `services` ➔ `repositories`), where Prisma Client is accessed solely through domain repositories.
 
 ### 4.3 Operations & Management Dashboard (`/admin`)
-- **Bilingual Status & Urgency Filtering**: Full Arabic and English parallel dictionaries (`ST`, `ST_EN`, `URG`, `URG_EN`, `JOBS`, `JOBS_EN`), cross-language job matching, and urgency sort priority.
-- **Idea Scoring & Rating Sliders**: Interactive 1–5 sliders for **Fit** (ملاءمة للشغل), **Ease** (سهولة التنفيذ), and **Value** (القيمة والميزانية) with weighted scoring `(fit*2 + ease*1 + value*2) * 10`, debounced API synchronization, and optimistic UI updates.
-- **Calendar Consultation Scheduler**: Day and slot booking (`١٠ ص إلى ١٢ ظ`, `١ إلى ٣ ع`, `٦ إلى ٨ م`), confirmation toggles, and visual conflict detection indicators across overlapping appointments.
+- **Bilingual Status & Urgency Filtering**: Full Arabic and English parallel dictionaries (`ST`, `ST_EN`, `URG`, `URG_EN`, `JOBS`, `JOBS_EN`), interactive filter chips for both status and urgency, cross-language job and urgency matching (`jobMatches`, `urgencyMatches`), and urgency/score sort priority.
+- **Idea Scoring & Rating Sliders**: Interactive 1–5 sliders for **Fit** (ملاءمة للشغل), **Ease** (سهولة التنفيذ), and **Value** (القيمة والميزانية) with unweighted average scoring `Math.round(((fit + ease + value) / 15) * 100)`, debounced API synchronization, and optimistic UI updates.
+- **Calendar Consultation Scheduler**: Day and slot booking (`١٠ ص إلى ١٢ ظ`, `١ إلى ٣ ع`, `٦ إلى ٨ م`), confirmation toggles, and visual conflict detection indicators (conflict alert banner, `.ez-conflict-badge`, and red-tinted cell boundaries) across overlapping appointments.
 - **Analytics & Financial Forecasting**: Dynamic deal value aggregation, conversion rate analysis, and pipeline metrics.
 
 ### 4.4 Live Fallback Lead Creation, Tracking & Dual-Transport Chat
